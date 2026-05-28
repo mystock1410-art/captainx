@@ -38,8 +38,9 @@ export async function GET(
         changePct: snap?.changePct ?? null,
         t: chart.t,
         c: chart.c,
+        _debug: chart.debug,
       },
-      { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=15" } }
+      { headers: { "Cache-Control": "no-store" } }
     );
   }
 

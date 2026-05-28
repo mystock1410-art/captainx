@@ -7,6 +7,7 @@ export type ChartData = {
   symbol: string;
   t: number[];
   c: number[];
+  debug?: { status: number; bodyPrefix: string; from: number; to: number };
 };
 
 export async function getChart(
@@ -25,17 +26,21 @@ export async function getChart(
         "Origin": "https://iboard.ssi.com.vn",
         "Referer": "https://iboard.ssi.com.vn/",
       },
-      next: { revalidate: 30 },
+      cache: "no-store",
     });
-    if (!r.ok) return { symbol: symbol.toUpperCase(), t: [], c: [] };
-    const payload = await r.json();
-    const data = payload?.data ?? {};
+    const text = await r.text();
+    const debug = { status: r.status, bodyPrefix: text.slice(0, 200), from, to: now };
+    if (!r.ok) return { symbol: symbol.toUpperCase(), t: [], c: [], debug };
+    let payload: Record<string, unknown> = {};
+    try { payload = JSON.parse(text); } catch {}
+    const data = (payload?.data ?? {}) as Record<string, unknown>;
     return {
       symbol: symbol.toUpperCase(),
-      t: data.t ?? [],
-      c: data.c ?? [],
+      t: (data.t as number[]) ?? [],
+      c: (data.c as number[]) ?? [],
+      debug,
     };
-  } catch {
-    return { symbol: symbol.toUpperCase(), t: [], c: [] };
+  } catch (e) {
+    return { symbol: symbol.toUpperCase(), t: [], c: [], debug: { status: -1, bodyPrefix: String(e).slice(0, 200), from: 0, to: 0 } };
   }
 }
