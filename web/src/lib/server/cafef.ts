@@ -46,6 +46,50 @@ export async function getSnapshot(symbol: string): Promise<Quote | null> {
   }
 }
 
+const INDEX_CHART_URL =
+  "https://msh-datacenter.cafef.vn/price/api/v1/CompanyCompac/RealTimeChartHeader?index={index}";
+
+const INDEX_MAP: Record<string, { id: number; key: string }> = {
+  VNINDEX: { id: 1, key: "RealTimeChartIndexV1:1" },
+  VN30: { id: 2, key: "RealTimeChartIndexV1:2" },
+};
+
+export type IndexChart = { t: number[]; c: number[] };
+
+export async function getIndexChart(symbol: string): Promise<IndexChart> {
+  const cfg = INDEX_MAP[symbol.toUpperCase()];
+  if (!cfg) return { t: [], c: [] };
+  const url = INDEX_CHART_URL.replace("{index}", String(cfg.id));
+  try {
+    const r = await fetch(url, {
+      headers: {
+        "User-Agent": UA,
+        Accept: "application/json",
+        Origin: "https://m.cafef.vn",
+        Referer: "https://m.cafef.vn/",
+      },
+      next: { revalidate: 30 },
+    });
+    if (!r.ok) return { t: [], c: [] };
+    const payload = await r.json();
+    const rows: Record<string, unknown>[] = payload?.value?.[cfg.key] ?? [];
+    const t: number[] = [];
+    const c: number[] = [];
+    for (const row of rows) {
+      const iso = row.time as string;
+      const price = row.data as number;
+      if (!iso || price == null) continue;
+      const sec = Math.floor(new Date(iso).getTime() / 1000);
+      if (!Number.isFinite(sec)) continue;
+      t.push(sec);
+      c.push(Math.round(price * 100) / 100);
+    }
+    return { t, c };
+  } catch {
+    return { t: [], c: [] };
+  }
+}
+
 export async function getSnapshots(symbols: string[]): Promise<Quote[]> {
   const results = await Promise.allSettled(symbols.map((s) => getSnapshot(s)));
   return results.map((r, i) => {

@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSnapshot, getSnapshots } from "@/lib/server/cafef";
-import { getChart as ssiChart } from "@/lib/server/ssi";
+import { getSnapshot, getIndexChart } from "@/lib/server/cafef";
 import { getChart as yahooChart } from "@/lib/server/yahoo";
 
 export const runtime = "nodejs";
 export const revalidate = 30;
 
-const CHART_TARGETS: Record<string, { provider: "ssi" | "yahoo"; symbol: string; name: string }> = {
-  vnindex: { provider: "ssi", symbol: "VNINDEX", name: "VN-Index" },
+type Target =
+  | { provider: "cafef-index"; symbol: string; name: string }
+  | { provider: "yahoo"; symbol: string; name: string };
+
+const CHART_TARGETS: Record<string, Target> = {
+  vnindex: { provider: "cafef-index", symbol: "VNINDEX", name: "VN-Index" },
   dji: { provider: "yahoo", symbol: "^DJI", name: "Dow Jones Industrial Average" },
   wti: { provider: "yahoo", symbol: "CL=F", name: "WTI Crude Oil Futures" },
   ym: { provider: "yahoo", symbol: "YM=F", name: "E-mini Dow Futures" },
@@ -23,9 +26,9 @@ export async function GET(
     return NextResponse.json({ error: `unknown slot '${slot}'` }, { status: 404 });
   }
 
-  if (target.provider === "ssi") {
+  if (target.provider === "cafef-index") {
     const [chart, snap] = await Promise.all([
-      ssiChart(target.symbol, "5", 604800),
+      getIndexChart(target.symbol),
       getSnapshot(target.symbol),
     ]);
     return NextResponse.json(
@@ -38,9 +41,8 @@ export async function GET(
         changePct: snap?.changePct ?? null,
         t: chart.t,
         c: chart.c,
-        _debug: chart.debug,
       },
-      { headers: { "Cache-Control": "no-store" } }
+      { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=15" } }
     );
   }
 
