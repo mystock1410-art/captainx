@@ -103,9 +103,10 @@ async function fetchOne(source: string, url: string): Promise<NewsItem[]> {
         typeof entry.title === "object" ? (entry.title as Record<string, unknown>)?._ as string : entry.title as string
       );
       if (!title) return [];
+      const linkObj = entry.link as Record<string, unknown> | null | undefined;
       const link =
         (typeof entry.link === "object" && entry.link !== null
-          ? (entry.link as Record<string, unknown>)?.$?.href || (entry.link as Record<string, unknown>)?._
+          ? ((linkObj?.$ as Record<string, unknown>)?.href ?? linkObj?._)
           : entry.link) as string || "";
       const summary = stripHtml(
         (entry.description || entry.summary || entry["content:encoded"]) as string
