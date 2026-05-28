@@ -19,7 +19,12 @@ export async function getChart(
   const url = `${CHART_URL}?resolution=${resolution}&symbol=${symbol.toUpperCase()}&from=${from}&to=${now}`;
   try {
     const r = await fetch(url, {
-      headers: { "User-Agent": UA },
+      headers: {
+        "User-Agent": UA,
+        "Accept": "application/json",
+        "Origin": "https://iboard.ssi.com.vn",
+        "Referer": "https://iboard.ssi.com.vn/",
+      },
       next: { revalidate: 30 },
     });
     if (!r.ok) return { symbol: symbol.toUpperCase(), t: [], c: [] };
