@@ -25,7 +25,7 @@ export async function GET(
 
   if (target.provider === "ssi") {
     const [chart, snap] = await Promise.all([
-      ssiChart(target.symbol, "5", 259200),
+      ssiChart(target.symbol, "5", 604800),
       getSnapshot(target.symbol),
     ]);
     return NextResponse.json(
