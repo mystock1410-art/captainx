@@ -1,0 +1,35 @@
+# Captain X — backend Fly.io config.
+# Rename `app` after `fly launch` if you want a different slug.
+app = "captainx-api"
+primary_region = "sin"  # Singapore — closest Fly region to Vietnam
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8000"
+  # CORS_ORIGINS = set via `fly secrets set` after Vercel domain is known
+  # REDIS_URL = set via `fly secrets set` once Upstash is provisioned
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 200
+    hard_limit = 500
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/api/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
