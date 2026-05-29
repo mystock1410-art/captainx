@@ -52,7 +52,13 @@ export function MarketBriefPanel() {
     setError(null);
     try {
       const res = await api.marketBrief(symbols, signal);
-      setData(res);
+      // Detect upstream Gemini failure embedded in the analysis text
+      if (res.model === null && res.vn.confidence === 0 && /^Lỗi|^Chưa cấu hình|^Gemini|^Model/i.test(res.vn.analysis)) {
+        setError(res.vn.analysis);
+        setData(null);
+      } else {
+        setData(res);
+      }
     } catch (e) {
       if ((e as Error).name === "AbortError") return;
       setError((e as Error).message);
@@ -123,7 +129,23 @@ export function MarketBriefPanel() {
           </div>
 
           {error && (
-            <div className="p-4 text-sm text-down">Lỗi: {error}</div>
+            <div className="space-y-2 p-4 text-sm">
+              <div className="flex items-start gap-2 text-down">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                <div>
+                  <div className="font-semibold">Không tải được phân tích AI</div>
+                  <div className="text-xs text-muted-foreground">{error}</div>
+                </div>
+              </div>
+              {/HTTP 429|quota|rate/i.test(error) && (
+                <div className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+                  Gemini API đang bị giới hạn truy cập (rate-limit). Free tier chỉ cho phép một số lượng request nhất định mỗi phút/ngày. Thử lại sau ít phút, hoặc nâng cấp key Gemini lên tier có quota cao hơn tại{" "}
+                  <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-foreground underline">
+                    aistudio.google.com
+                  </a>.
+                </div>
+              )}
+            </div>
           )}
 
           {!data && !error && loading && (
