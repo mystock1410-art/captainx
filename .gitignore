@@ -28,3 +28,11 @@ Thumbs.db
 # Scratch
 _wartracker.js
 _wartracker.css
+_logo_extract/
+_extract_logo.py
+_crop_logo.py
+_crop2.py
+_crop3.py
+
+# Brand assets (kept locally, not in repo)
+Brand Guidelines*.pdf

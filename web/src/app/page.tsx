@@ -1,6 +1,7 @@
 import { Header } from "@/components/header";
 import { TickerBar } from "@/components/ticker-bar";
 import { ChartsGrid } from "@/components/charts-grid";
+import { WorldTicker } from "@/components/world-ticker";
 import { LiveFeed } from "@/components/live-feed";
 import { Headlines } from "@/components/headlines";
 import { MarketBriefPanel } from "@/components/market-brief";
@@ -17,6 +18,8 @@ export default function Page() {
       <TickerBar />
       <main className="mx-auto w-full max-w-[1600px] flex-1 space-y-6 px-4 py-4">
         <ChartsGrid />
+
+        <WorldTicker />
 
         <MarketBriefPanel />
 

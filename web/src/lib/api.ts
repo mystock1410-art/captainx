@@ -10,6 +10,14 @@ export type Quote = {
   error?: string;
 };
 
+export type WorldQuote = {
+  symbol: string;
+  label: string;
+  price: number | null;
+  change: number | null;
+  changePct: number | null;
+};
+
 export type ChartPayload = {
   slot: string;
   name: string;
@@ -50,6 +58,8 @@ export const api = {
   headlines: (signal?: AbortSignal) => getJson<NewsItem[]>(`/api/headlines`, signal),
   newsEn: (signal?: AbortSignal) => getJson<NewsItem[]>(`/api/news-en`, signal),
   headlinesEn: (signal?: AbortSignal) => getJson<NewsItem[]>(`/api/headlines-en`, signal),
+  worldQuotes: (signal?: AbortSignal) =>
+    getJson<WorldQuote[]>(`/api/world-quotes`, signal),
   marketBrief: (symbols: string[], signal?: AbortSignal) =>
     getJson<MarketBrief>(
       `/api/market-brief${symbols.length ? `?symbols=${encodeURIComponent(symbols.join(","))}` : ""}`,
