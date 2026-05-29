@@ -52,8 +52,8 @@ export function MarketBriefPanel() {
     setError(null);
     try {
       const res = await api.marketBrief(symbols, signal);
-      // Detect upstream Gemini failure embedded in the analysis text
-      if (res.model === null && res.vn.confidence === 0 && /^Lỗi|^Chưa cấu hình|^Gemini|^Model/i.test(res.vn.analysis)) {
+      // Detect upstream AI failure embedded in the analysis text
+      if (res.model === null && res.vn.confidence === 0 && /^Lỗi|^Chưa cấu hình|^Claude|^ANTHROPIC|^Gemini|^Model/i.test(res.vn.analysis)) {
         setError(res.vn.analysis);
         setData(null);
       } else {
@@ -137,11 +137,11 @@ export function MarketBriefPanel() {
                   <div className="text-xs text-muted-foreground">{error}</div>
                 </div>
               </div>
-              {/HTTP 429|quota|rate/i.test(error) && (
+              {/HTTP 429|quota|rate|529|overload/i.test(error) && (
                 <div className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
-                  Gemini API đang bị giới hạn truy cập (rate-limit). Free tier chỉ cho phép một số lượng request nhất định mỗi phút/ngày. Thử lại sau ít phút, hoặc nâng cấp key Gemini lên tier có quota cao hơn tại{" "}
-                  <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-foreground underline">
-                    aistudio.google.com
+                  Claude API đang bị giới hạn truy cập hoặc quá tải. Thử lại sau ít phút, hoặc nâng cấp tier tại{" "}
+                  <a href="https://console.anthropic.com/settings/limits" target="_blank" rel="noopener noreferrer" className="text-foreground underline">
+                    console.anthropic.com
                   </a>.
                 </div>
               )}
@@ -149,7 +149,7 @@ export function MarketBriefPanel() {
           )}
 
           {!data && !error && loading && (
-            <div className="p-6 text-center text-sm text-muted-foreground">Đang gọi Gemini Flash…</div>
+            <div className="p-6 text-center text-sm text-muted-foreground">Đang gọi Claude Opus 4.7…</div>
           )}
 
           {data && (

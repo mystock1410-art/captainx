@@ -22,13 +22,13 @@ FastAPI proxy + cache for Vietnamese equity market dashboard.
 - `GET /api/headlines` — VN flash + FireAnt aggregator
 - `GET /api/news-en` — international news translated to Vietnamese
 - `GET /api/headlines-en` — international flash translated to Vietnamese
-- `GET /api/market-brief` — AI market analysis (Gemini Flash)
+- `GET /api/market-brief` — AI market analysis (Claude Opus 4.7)
 
 ## Secrets (configure in Space settings → Variables and secrets)
 
 | Name | Required | Notes |
 |---|---|---|
-| `GEMINI_API_KEY` | yes | Free key from https://aistudio.google.com/apikey |
+| `ANTHROPIC_API_KEY` | yes | Get a key at https://console.anthropic.com/settings/keys (new accounts get $5 free credit) |
 | `CORS_ORIGINS` | yes | CSV of allowed frontend origins, e.g. `https://captainx.vercel.app` |
 | `FIREANT_TOKEN` | no | Override the default public FireAnt token if needed |
 

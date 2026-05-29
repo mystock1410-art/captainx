@@ -46,7 +46,7 @@ Sau khi tạo, vào tab **Settings → Variables and secrets**, thêm 2 secret:
 
 | Name | Value |
 |---|---|
-| `GEMINI_API_KEY` | key bạn đã có: `AIzaSyD_0TCr4...` |
+| `ANTHROPIC_API_KEY` | key Claude lấy tại https://console.anthropic.com/settings/keys (dạng `sk-ant-api03-...`) |
 | `CORS_ORIGINS` | (để trống tạm, sẽ điền sau khi có Vercel URL) |
 
 ## Bước 4 — Push `api/` subtree lên HF Space
@@ -125,7 +125,7 @@ git config alias.deploy '!git push origin main && git subtree push --prefix=api 
 | Frontend gọi API → CORS error | Vào HF Settings, kiểm tra `CORS_ORIGINS` có domain Vercel chính xác (kèm `https://`) |
 | HF Space cold start chậm lần đầu | Bình thường ~10-20s, sau đó stable. Nếu Free Public Space, không sleep. |
 | `git subtree push` fail "Updates were rejected" | Force push: `git subtree split --prefix=api -b hf-tmp; git push hf hf-tmp:main --force; git branch -D hf-tmp` |
-| Gemini 503 trên production | Đã có retry 3 lần, nếu vẫn 503 click "Phân tích lại" sau vài giây. Free tier Gemini hay overload. |
+| Claude 429/529 trên production | SDK tự retry 2 lần, nếu vẫn lỗi click "Phân tích lại" sau vài giây. Hoặc nâng tier tại console.anthropic.com. |
 
 ## Chi phí
 
@@ -134,5 +134,7 @@ git config alias.deploy '!git push origin main && git subtree push --prefix=api 
 | GitHub repo private | Free | $0 |
 | Hugging Face Space Docker | Free public | $0 |
 | Vercel Hobby | Free | $0 |
-| Gemini Flash 2.5 | Free tier (15 RPM, 250 RPD) | $0 |
-| **Tổng** | | **$0/tháng** |
+| Claude Opus 4.7 | Pay-as-you-go ($5/M input, $25/M output) — $5 free credit cho account mới | ~$3-5/tháng nếu dùng vừa phải |
+| **Tổng** | | **~$3-5/tháng** sau khi hết credit miễn phí |
+
+> 💡 **Cost tip:** Nếu muốn rẻ hơn, sửa `MODEL = "claude-sonnet-4-6"` trong `api/sources/ai.py` (½ giá Opus) hoặc `"claude-haiku-4-5"` (⅕ giá, nhanh hơn).

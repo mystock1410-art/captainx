@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSnapshot, getSnapshots } from "@/lib/server/cafef";
 import { getLiveFeed, getLiveFeedEn } from "@/lib/server/rss";
 import { translateItems } from "@/lib/server/translate";
-import { generateMarketBrief } from "@/lib/server/gemini";
+import { generateMarketBrief } from "@/lib/server/claude";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
