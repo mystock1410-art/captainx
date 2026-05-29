@@ -13,10 +13,10 @@ export function Header() {
           className="group flex items-center gap-2.5"
         >
           <Image
-            src="/ocbs-logo-dark.png"
+            src="/ocbs-logo.png"
             alt="OCBS"
-            width={28}
-            height={28}
+            width={32}
+            height={32}
             className="transition-transform group-hover:scale-105"
             priority
           />
