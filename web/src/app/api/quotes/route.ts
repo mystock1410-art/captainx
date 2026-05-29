@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getQuotes } from "@/lib/server/tcbs";
+import { getSnapshots } from "@/lib/server/cafef";
 
 export const runtime = "nodejs";
 export const revalidate = 20;
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "no symbols" }, { status: 400 });
   }
 
-  const data = await getQuotes(symbols);
+  const data = await getSnapshots(symbols);
   return NextResponse.json(data, {
     headers: { "Cache-Control": "public, s-maxage=20, stale-while-revalidate=10" },
   });

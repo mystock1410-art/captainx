@@ -1,18 +1,79 @@
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 
-const PRICE_HISTORY_URL =
-  "https://cafef.vn/du-lieu/Ajax/PageNew/DataHistory/PriceHistory.ashx?Symbol={symbol}&StartDate=&EndDate=&PageIndex=1&PageSize=2";
+// banggia.cafef.vn returns realtime prices for all HOSE/HNX/UPCOM tickers
+// Fields: a=symbol, e=current price, w=reference price, k=change, Time=timestamp
+const BANGGIA_URL = "https://banggia.cafef.vn/stockhandler.ashx?index={exchange}";
+const EXCHANGES = ["HOSE", "HNX", "UPCOM"];
 
 export type Quote = {
   symbol: string;
   price: number | null;
   change: number | null;
   changePct: number | null;
-  prev?: number;
-  date?: string;
+  ref?: number | null;
   error?: string;
 };
+
+type BangGiaRow = {
+  a: string;   // symbol
+  e: number;   // current price (nghìn đồng)
+  w: number;   // reference price
+  k: number;   // change amount
+};
+
+let bangGiaCache: Map<string, BangGiaRow> | null = null;
+let bangGiaCacheAt = 0;
+const CACHE_TTL_MS = 15_000; // 15s cache to avoid hammering on burst requests
+
+async function getBangGiaMap(): Promise<Map<string, BangGiaRow>> {
+  const now = Date.now();
+  if (bangGiaCache && now - bangGiaCacheAt < CACHE_TTL_MS) return bangGiaCache;
+
+  const maps = await Promise.allSettled(
+    EXCHANGES.map((ex) =>
+      fetch(BANGGIA_URL.replace("{exchange}", ex), {
+        headers: { "User-Agent": UA, Referer: "https://cafef.vn/" },
+        next: { revalidate: 15 },
+      }).then((r) => (r.ok ? r.json() as Promise<BangGiaRow[]> : []))
+    )
+  );
+
+  const merged = new Map<string, BangGiaRow>();
+  for (const result of maps) {
+    const rows: BangGiaRow[] = result.status === "fulfilled" ? result.value : [];
+    for (const row of rows) {
+      if (row.a) merged.set(row.a.toUpperCase(), row);
+    }
+  }
+  bangGiaCache = merged;
+  bangGiaCacheAt = now;
+  return merged;
+}
+
+export async function getSnapshots(symbols: string[]): Promise<Quote[]> {
+  try {
+    const map = await getBangGiaMap();
+    return symbols.map((sym) => {
+      const upper = sym.toUpperCase();
+      const row = map.get(upper);
+      if (!row || !row.e) {
+        return { symbol: upper, price: null, change: null, changePct: null, error: "no-data" };
+      }
+      const price = Math.round(row.e * 10000) / 10000;
+      const ref = row.w ?? null;
+      const change = row.k != null ? Math.round(row.k * 10000) / 10000 : null;
+      const changePct = change != null && ref ? Math.round((change / ref) * 100 * 10000) / 10000 : null;
+      return { symbol: upper, price, change, changePct, ref };
+    });
+  } catch {
+    return symbols.map((sym) => ({ symbol: sym.toUpperCase(), price: null, change: null, changePct: null, error: "fetch-error" }));
+  }
+}
+
+// getSnapshot for VNINDEX — still uses PriceHistory (index, not a stock)
+const PRICE_HISTORY_URL =
+  "https://cafef.vn/du-lieu/Ajax/PageNew/DataHistory/PriceHistory.ashx?Symbol={symbol}&StartDate=&EndDate=&PageIndex=1&PageSize=2";
 
 export async function getSnapshot(symbol: string): Promise<Quote | null> {
   const url = PRICE_HISTORY_URL.replace("{symbol}", symbol.toUpperCase());
@@ -38,8 +99,7 @@ export async function getSnapshot(symbol: string): Promise<Quote | null> {
       price: Math.round(price * 10000) / 10000,
       change,
       changePct,
-      prev: Math.round(prev * 10000) / 10000,
-      date: rows[0].Ngay as string | undefined,
+      ref: Math.round(prev * 10000) / 10000,
     };
   } catch {
     return null;
