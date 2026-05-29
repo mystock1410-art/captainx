@@ -150,16 +150,3 @@ export async function getIndexChart(symbol: string): Promise<IndexChart> {
   }
 }
 
-export async function getSnapshots(symbols: string[]): Promise<Quote[]> {
-  const results = await Promise.allSettled(symbols.map((s) => getSnapshot(s)));
-  return results.map((r, i) => {
-    if (r.status === "fulfilled" && r.value) return r.value;
-    return {
-      symbol: symbols[i].toUpperCase(),
-      price: null,
-      change: null,
-      changePct: null,
-      error: r.status === "rejected" ? String(r.reason) : "no-data",
-    };
-  });
-}
