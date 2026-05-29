@@ -29,6 +29,7 @@ function ChartSlot({ slot, label }: { slot: string; label: string }) {
   );
   return (
     <ChartCard
+      slot={slot}
       label={label}
       name={data?.name ?? ""}
       symbol={data?.symbol ?? slot.toUpperCase()}
