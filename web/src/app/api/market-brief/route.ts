@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSnapshot, getSnapshots } from "@/lib/server/cafef";
+import { getSnapshot } from "@/lib/server/cafef";
+import { getQuotes } from "@/lib/server/tcbs";
 import { getLiveFeed, getLiveFeedEn } from "@/lib/server/rss";
 import { translateItems } from "@/lib/server/translate";
 import { generateMarketBrief } from "@/lib/server/gemini";
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   const [vnindex, watchlistQuotes, vnNews, enNewsRaw] = await Promise.all([
     getSnapshot("VNINDEX"),
-    getSnapshots(watchlist),
+    getQuotes(watchlist),
     getLiveFeed(24),
     getLiveFeedEn(15),
   ]);
