@@ -1,3 +1,6 @@
+# Legacy / local-only (FastAPI backend, scratch, brand PDF)
+/_archive/
+
 # Node / Next.js
 node_modules/
 .next/
@@ -36,3 +39,4 @@ _crop3.py
 
 # Brand assets (kept locally, not in repo)
 Brand Guidelines*.pdf
+.vercel

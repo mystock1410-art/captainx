@@ -1,0 +1,438 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f6f5ef;
+  --foreground: #0B0F14;
+  --muted: #ecebe3;
+  --muted-foreground: #6b7280;
+  --border: #d8d6cf;
+  --card: #ffffff;
+  --card-foreground: #0B0F14;
+  --accent: #ece9e0;
+  --up: #008C44;
+  --down: #B91C1C;
+  --gold: #E4A025;
+  --brand: #008C44;
+  --ceiling: #C026D3;
+  --floor: #0EA5E9;
+  --ref: #E4A025;
+}
+
+.dark {
+  --background: #03070b;
+  --foreground: #E8EAED;
+  --muted: #0e1620;
+  --muted-foreground: #8b95a4;
+  --border: #1f2a36;
+  --card: #0f1822;
+  --card-foreground: #E8EAED;
+  --accent: #182230;
+  --up: #00B158;
+  --down: #DC3535;
+  --gold: #E4A025;
+  --brand: #00B158;
+  --ceiling: #E879F9;
+  --floor: #38BDF8;
+  --ref: #E4A025;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-accent: var(--accent);
+  --color-up: var(--up);
+  --color-down: var(--down);
+  --color-gold: var(--gold);
+  --color-brand: var(--brand);
+  --color-ceiling: var(--ceiling);
+  --color-floor: var(--floor);
+  --color-ref: var(--ref);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Institutional ambient depth — radial wash so the surface reads as
+   "trading floor" rather than a flat panel. Inspired by Simplize / Bloomberg. */
+body {
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  background-image:
+    radial-gradient(ellipse 110% 60% at 5% -10%, rgba(0, 140, 68, 0.14), transparent 55%),
+    radial-gradient(ellipse 80% 50% at 100% -5%, rgba(228, 160, 37, 0.08), transparent 60%),
+    radial-gradient(ellipse 120% 70% at 50% 110%, rgba(0, 140, 68, 0.10), transparent 70%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+.dark body {
+  background-image:
+    radial-gradient(ellipse 90% 50% at 5% -10%, rgba(0, 177, 88, 0.10), transparent 60%),
+    radial-gradient(ellipse 60% 35% at 100% -5%, rgba(228, 160, 37, 0.04), transparent 60%),
+    radial-gradient(ellipse 110% 60% at 50% 115%, rgba(0, 177, 88, 0.06), transparent 70%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Institutional section header: UPPERCASE, tight-tracked green */
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--brand);
+  line-height: 1;
+}
+
+/* Hairline divider (used to replace card outlines where appropriate) */
+.hairline {
+  border-color: var(--border);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 0;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@keyframes marquee-ltr {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee-ltr 90s linear infinite;
+}
+.marquee-pause:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* CTA highlight blink — gold text glow that pulses to attract clicks */
+@keyframes cta-blink {
+  0%, 100% {
+    color: var(--gold);
+    text-shadow: 0 0 6px rgba(228, 160, 37, 0.55), 0 0 14px rgba(228, 160, 37, 0.35);
+    opacity: 1;
+  }
+  50% {
+    color: var(--foreground);
+    text-shadow: 0 0 0 rgba(228, 160, 37, 0);
+    opacity: 0.65;
+  }
+}
+.cta-blink {
+  animation: cta-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes cta-dot-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(228, 160, 37, 0.7);
+  }
+  50% {
+    transform: scale(1.25);
+    box-shadow: 0 0 0 6px rgba(228, 160, 37, 0);
+  }
+}
+.cta-dot {
+  animation: cta-dot-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes cta-border-blink {
+  0%, 100% {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 1px rgba(228, 160, 37, 0.55), 0 0 18px rgba(228, 160, 37, 0.35);
+  }
+  50% {
+    border-color: var(--border);
+    box-shadow: 0 0 0 0 rgba(228, 160, 37, 0);
+  }
+}
+.cta-border {
+  animation: cta-border-blink 1.2s ease-in-out infinite;
+}
+
+/* Brand-green variants of the CTA highlight set — same animation cadence,
+   uses --brand (OCBS green) instead of --gold. */
+@keyframes cta-blink-brand {
+  0%, 100% {
+    color: var(--brand);
+    text-shadow: 0 0 6px rgba(0, 177, 88, 0.55), 0 0 14px rgba(0, 177, 88, 0.35);
+    opacity: 1;
+  }
+  50% {
+    color: var(--foreground);
+    text-shadow: 0 0 0 rgba(0, 177, 88, 0);
+    opacity: 0.65;
+  }
+}
+.cta-blink-brand {
+  animation: cta-blink-brand 1.2s ease-in-out infinite;
+}
+
+@keyframes cta-dot-pulse-brand {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 177, 88, 0.7);
+  }
+  50% {
+    transform: scale(1.25);
+    box-shadow: 0 0 0 6px rgba(0, 177, 88, 0);
+  }
+}
+.cta-dot-brand {
+  animation: cta-dot-pulse-brand 1.2s ease-in-out infinite;
+}
+
+@keyframes cta-border-blink-brand {
+  0%, 100% {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 1px rgba(0, 177, 88, 0.55), 0 0 18px rgba(0, 177, 88, 0.35);
+  }
+  50% {
+    border-color: var(--border);
+    box-shadow: 0 0 0 0 rgba(0, 177, 88, 0);
+  }
+}
+.cta-border-brand {
+  animation: cta-border-blink-brand 1.2s ease-in-out infinite;
+}
+
+/* ====================================================================
+   Elevated card surface — mimics trilliancap.com/wartracker styling:
+   soft vertical gradient (lighter top → darker bottom), hairline border,
+   subtle inner top highlight, outer drop shadow for depth. Replaces
+   flat `bg-card border` on quote/chart/derivative cards.
+   ==================================================================== */
+.card-elevated {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--card) 92%, white 8%) 0%,
+      var(--card) 55%,
+      color-mix(in srgb, var(--card) 92%, black 8%) 100%);
+  border: 1px solid color-mix(in srgb, var(--border) 70%, white 12%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    0 1px 2px rgba(0, 0, 0, 0.45),
+    0 6px 14px rgba(0, 0, 0, 0.30);
+}
+
+.dark .card-elevated {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--card) 82%, white 7%) 0%,
+      var(--card) 50%,
+      color-mix(in srgb, var(--card) 82%, black 18%) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+    0 1px 3px rgba(0, 0, 0, 0.80),
+    0 10px 28px rgba(0, 0, 0, 0.65);
+}
+
+/* Compact variant for small chips (SPX/NASDAQ/DOW row, watchlist chips) —
+   same surface treatment with a tighter shadow envelope. */
+.chip-elevated {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--card) 88%, white 10%) 0%,
+      var(--card) 100%);
+  border: 1px solid color-mix(in srgb, var(--border) 65%, white 14%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.40),
+    0 3px 8px rgba(0, 0, 0, 0.22);
+}
+
+.dark .chip-elevated {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--card) 80%, white 8%) 0%,
+      var(--card) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.70),
+    0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* Hot news card — translucent red surface inspired by trilliancap.com/wartracker's
+   "HERE'S THE LATEST" panel. Used above each NewsPanel to highlight breaking items. */
+.hot-news-card {
+  background:
+    linear-gradient(180deg,
+      rgba(220, 53, 53, 0.08) 0%,
+      rgba(220, 53, 53, 0.04) 60%,
+      rgba(220, 53, 53, 0.02) 100%);
+  border: 1px solid rgba(220, 53, 53, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 0 1px rgba(220, 53, 53, 0.05),
+    0 0 14px rgba(220, 53, 53, 0.08),
+    0 6px 16px rgba(0, 0, 0, 0.40);
+}
+
+.dark .hot-news-card {
+  background:
+    linear-gradient(180deg,
+      rgba(220, 53, 53, 0.10) 0%,
+      rgba(120, 20, 20, 0.12) 55%,
+      rgba(70, 12, 12, 0.16) 100%);
+  border: 1px solid rgba(220, 53, 53, 0.30);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 0 1px rgba(220, 53, 53, 0.06),
+    0 0 18px rgba(220, 53, 53, 0.10),
+    0 8px 22px rgba(0, 0, 0, 0.60);
+}
+
+/* Full-width elevated bar (sticky header / footer) — same surface treatment
+   as .card-elevated but only with bottom border and downward shadow. */
+.bar-elevated {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--card) 82%, white 7%) 0%,
+      var(--card) 60%,
+      color-mix(in srgb, var(--card) 82%, black 18%) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 14px rgba(0, 0, 0, 0.55);
+}
+
+.dark .bar-elevated {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--card) 82%, white 7%) 0%,
+      var(--card) 60%,
+      color-mix(in srgb, var(--card) 82%, black 18%) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 18px rgba(0, 0, 0, 0.70);
+}
+
+/* Footer variant — mirror of .bar-elevated but with border-top + upward shadow,
+   so a sticky footer feels lifted above the page content. */
+.bar-elevated-footer {
+  background:
+    linear-gradient(0deg,
+      color-mix(in srgb, var(--card) 82%, white 7%) 0%,
+      var(--card) 60%,
+      color-mix(in srgb, var(--card) 82%, black 18%) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+    0 -4px 14px rgba(0, 0, 0, 0.55);
+}
+
+.dark .bar-elevated-footer {
+  background:
+    linear-gradient(0deg,
+      color-mix(in srgb, var(--card) 82%, white 7%) 0%,
+      var(--card) 60%,
+      color-mix(in srgb, var(--card) 82%, black 18%) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+    0 -6px 18px rgba(0, 0, 0, 0.70);
+}
+
+/* ====================================================================
+   OCBS LOGO — 3D embossed look with continuously rotating gold highlight.
+   Wrap the <Image> in <div class="ocbs-3d-wrap"> in header.tsx.
+   ==================================================================== */
+.ocbs-3d-wrap {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  isolation: isolate;
+}
+
+/* Rotating gold scanner — the highlight that sweeps around */
+.ocbs-3d-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 250deg,
+    rgba(228, 160, 37, 0.95) 295deg,
+    rgba(228, 160, 37, 0.45) 335deg,
+    transparent 360deg
+  );
+  animation: ocbs-scan 2.6s linear infinite;
+  filter: blur(2.5px);
+  z-index: 0;
+}
+
+/* Secondary slower brand-green highlight, opposite phase, for depth */
+.ocbs-3d-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 180deg,
+    transparent 0deg,
+    transparent 285deg,
+    rgba(0, 177, 88, 0.65) 320deg,
+    transparent 360deg
+  );
+  animation: ocbs-scan 4.2s linear infinite reverse;
+  filter: blur(3px);
+  z-index: 0;
+}
+
+/* Logo: lifted via multi-layer drop shadows + continuous spin */
+.ocbs-3d-wrap > :where(img, svg, span) {
+  position: relative;
+  z-index: 1;
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.18))
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 6px rgba(228, 160, 37, 0.45))
+    drop-shadow(0 0 12px rgba(0, 140, 68, 0.25));
+  animation: ocbs-spin-logo 5s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes ocbs-scan {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ocbs-spin-logo {
+  to { transform: rotate(360deg); }
+}
+
+/* Pause animation on hover so users can read the logo clearly */
+.ocbs-3d-wrap:hover::before,
+.ocbs-3d-wrap:hover::after,
+.ocbs-3d-wrap:hover > :where(img, svg, span) {
+  animation-play-state: paused;
+}
