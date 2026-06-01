@@ -2,7 +2,7 @@
 
 import { usePolling } from "@/hooks/use-polling";
 import { api, type WorldCategory, type WorldQuote } from "@/lib/api";
-import { formatPct, formatPrice, cn } from "@/lib/utils";
+import { formatChange, formatPct, formatPrice, cn } from "@/lib/utils";
 
 const CATEGORIES: { key: WorldCategory; label: string }[] = [
   { key: "asia", label: "Asia" },
@@ -95,6 +95,16 @@ function WorldChip({ quote }: { quote: WorldQuote }) {
           <span className="font-mono text-base font-bold tabular-nums">
             {formatPrice(quote.price!)}
           </span>
+          {quote.change != null && (
+            <span
+              className={cn(
+                "font-mono text-[12px] font-semibold tabular-nums",
+                up ? "text-up" : "text-down",
+              )}
+            >
+              {formatChange(quote.change)}
+            </span>
+          )}
           <span
             className={cn(
               "font-mono text-[12px] font-semibold tabular-nums",
