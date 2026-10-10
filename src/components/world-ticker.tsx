@@ -2,7 +2,7 @@
 
 import { usePolling } from "@/hooks/use-polling";
 import { api, type WorldCategory, type WorldQuote } from "@/lib/api";
-import { formatChange, formatPct, formatPrice, cn } from "@/lib/utils";
+import { formatChange, formatChangeInt, formatPct, formatPrice, formatPriceInt, cn } from "@/lib/utils";
 
 const CATEGORIES: { key: WorldCategory; label: string }[] = [
   { key: "asia", label: "Asia" },
@@ -60,8 +60,11 @@ export function WorldTicker() {
         const items = grouped[key];
         if (!items || items.length === 0) return null;
         return (
-          <div key={key} className="flex items-center gap-3 px-3 py-2">
-            <span className="w-24 shrink-0 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
+          <div
+            key={key}
+            className="flex flex-col gap-1.5 px-3 py-2 sm:flex-row sm:items-center sm:gap-3"
+          >
+            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand sm:w-20 sm:text-[11px] md:w-24">
               {label}
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -79,35 +82,41 @@ export function WorldTicker() {
 function WorldChip({ quote }: { quote: WorldQuote }) {
   const hasData = quote.price !== null && quote.changePct !== null;
   const up = hasData && (quote.changePct ?? 0) >= 0;
+  const unitValue = !!quote.unit; // large integer values (e.g. VND/kg) render without decimals
   return (
-    <div className="chip-elevated inline-flex items-baseline gap-2 rounded-sm px-2.5 py-1">
+    <div className="chip-elevated inline-flex items-baseline gap-1.5 rounded-sm px-2 py-1 sm:gap-2 sm:px-2.5">
       <span
         className={cn(
           "inline-block h-1.5 w-1.5 self-center rounded-full",
           hasData ? (up ? "bg-up" : "bg-down") : "bg-muted-foreground",
         )}
       />
-      <span className="text-[15px] font-bold tracking-[0.02em] text-foreground">
+      <span className="text-[12px] font-bold tracking-[0.02em] text-foreground sm:text-[14px] md:text-[15px]">
         {quote.label}
       </span>
       {hasData ? (
         <>
-          <span className="font-mono text-base font-bold tabular-nums">
-            {formatPrice(quote.price!)}
+          <span className="font-mono text-[13px] font-bold tabular-nums sm:text-[15px] md:text-base">
+            {unitValue ? formatPriceInt(quote.price!) : formatPrice(quote.price!)}
           </span>
+          {quote.unit && (
+            <span className="font-mono text-[9px] font-medium text-muted-foreground sm:text-[10px]">
+              {quote.unit}
+            </span>
+          )}
           {quote.change != null && (
             <span
               className={cn(
-                "font-mono text-[12px] font-semibold tabular-nums",
+                "font-mono text-[10px] font-semibold tabular-nums sm:text-[11px] md:text-[12px]",
                 up ? "text-up" : "text-down",
               )}
             >
-              {formatChange(quote.change)}
+              {unitValue ? formatChangeInt(quote.change) : formatChange(quote.change)}
             </span>
           )}
           <span
             className={cn(
-              "font-mono text-[12px] font-semibold tabular-nums",
+              "font-mono text-[10px] font-semibold tabular-nums sm:text-[11px] md:text-[12px]",
               up ? "text-up" : "text-down",
             )}
           >
@@ -115,7 +124,7 @@ function WorldChip({ quote }: { quote: WorldQuote }) {
           </span>
         </>
       ) : (
-        <span className="text-[12px] text-muted-foreground">—</span>
+        <span className="text-[11px] text-muted-foreground sm:text-[12px]">—</span>
       )}
     </div>
   );

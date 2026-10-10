@@ -27,6 +27,8 @@ export type WorldQuote = {
   price: number | null;
   change: number | null;
   changePct: number | null;
+  /** Unit suffix to show after the price (e.g. "VND/kg" for converted coffee). */
+  unit?: string;
 };
 
 export type ChartPayload = {

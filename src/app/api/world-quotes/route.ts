@@ -14,7 +14,12 @@ type WorldQuote = {
   price: number | null;
   change: number | null;
   changePct: number | null;
+  unit?: string;
 };
+
+// KC=F (Coffee C, Arabica) is quoted in US cents per pound. Convert to VND/kg:
+//   VND/kg = (cents/lb) × (VND_per_USD × LB_PER_KG / 100)
+const LB_PER_KG = 2.2046226218;
 
 const SYMBOLS: { symbol: string; label: string; category: WorldCategory }[] = [
   // Asia
@@ -45,19 +50,39 @@ const SYMBOLS: { symbol: string; label: string; category: WorldCategory }[] = [
 ];
 
 export async function GET() {
-  const results = await Promise.all(
-    SYMBOLS.map(async ({ symbol, label, category }): Promise<WorldQuote> => {
-      const c = await getChart(symbol, "1d", "5m");
-      return {
-        symbol,
-        label,
-        category,
-        price: c.price,
-        change: c.change,
-        changePct: c.changePct,
-      };
-    }),
-  );
+  const [results, coffee, usdVnd] = await Promise.all([
+    Promise.all(
+      SYMBOLS.map(async ({ symbol, label, category }): Promise<WorldQuote> => {
+        const c = await getChart(symbol, "1d", "5m");
+        return {
+          symbol,
+          label,
+          category,
+          price: c.price,
+          change: c.change,
+          changePct: c.changePct,
+        };
+      }),
+    ),
+    getChart("KC=F", "1d", "5m"), // Coffee C (Arabica) — US cents/lb
+    getChart("USDVND=X", "1d", "5m"), // USD → VND rate (used only for conversion)
+  ]);
+
+  // Append coffee converted to VND/kg (keep KC=F's own % move; price/change
+  // are converted via the live USD/VND rate). Shows "—" if either feed is down.
+  const rate = usdVnd.price;
+  const canConvert = coffee.price != null && rate != null;
+  const factor = canConvert ? (rate! / 100) * LB_PER_KG : 0;
+  results.push({
+    symbol: "KC=F",
+    label: "Cà phê",
+    category: "commodities",
+    price: canConvert ? Math.round(coffee.price! * factor) : null,
+    change: canConvert && coffee.change != null ? Math.round(coffee.change * factor) : null,
+    changePct: canConvert ? coffee.changePct : null,
+    unit: "VND/kg",
+  });
+
   return NextResponse.json(results, {
     headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=30" },
   });

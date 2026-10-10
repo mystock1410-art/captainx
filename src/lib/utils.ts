@@ -24,3 +24,13 @@ export function formatChange(n: number): string {
     maximumFractionDigits: 2,
   })}`;
 }
+
+// Integer variants (no decimals) — used for large VND values like VND/kg prices.
+export function formatPriceInt(n: number): string {
+  return n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+}
+
+export function formatChangeInt(n: number): string {
+  const sign = n > 0 ? "+" : "";
+  return `${sign}${n.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+}
