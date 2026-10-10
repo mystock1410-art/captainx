@@ -1,4 +1,5 @@
 import type { Quote } from "@/lib/server/cafef";
+import { fetchWithTimeout } from "./http";
 
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36";
@@ -27,7 +28,7 @@ export async function getSnapshots(symbols: string[]): Promise<Quote[]> {
   // size = N tickers × ~2 to be safe in case of split/duplicate rows.
   const url = `${URL}?q=code:${tickers.join(",")}&size=${tickers.length * 2}&sort=date:desc`;
   try {
-    const r = await fetch(url, {
+    const r = await fetchWithTimeout(url, {
       headers: {
         "User-Agent": UA,
         Accept: "application/json",
@@ -35,6 +36,7 @@ export async function getSnapshots(symbols: string[]): Promise<Quote[]> {
         Referer: "https://dstock.vndirect.com.vn/",
       },
       cache: "no-store",
+      timeoutMs: 7000,
     });
     if (!r.ok) return fallback(tickers, `VND HTTP ${r.status}`);
     const payload = await r.json();

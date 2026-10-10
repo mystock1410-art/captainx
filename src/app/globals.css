@@ -436,3 +436,29 @@ body {
 .ocbs-3d-wrap:hover > :where(img, svg, span) {
   animation-play-state: paused;
 }
+
+/* ====================================================================
+   Accessibility
+   ==================================================================== */
+
+/* Visible keyboard-focus ring on all interactive elements. Only triggers
+   for keyboard navigation (:focus-visible), never on mouse click. */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Honour the OS "reduce motion" setting — neutralises every infinite
+   animation (cta-blink, cta-dot, cta-border, marquee, ocbs-scan/spin) and
+   freezes keyframes at their resting (most-visible) state. WCAG 2.2.2. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,6 +1,8 @@
 // Hyperliquid public info API — perpetual markets on builder-deployed DEXes.
 // Docs: https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint
 
+import { fetchWithTimeout } from "./http";
+
 const INFO_URL = "https://api.hyperliquid.xyz/info";
 
 type Candle = {
@@ -35,11 +37,12 @@ type MetaAndAssetCtxs = [{ universe: MetaUniverseItem[] }, AssetCtx[]];
 
 async function post<T>(body: unknown): Promise<T | null> {
   try {
-    const r = await fetch(INFO_URL, {
+    const r = await fetchWithTimeout(INFO_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
       cache: "no-store",
+      timeoutMs: 7000,
     });
     if (!r.ok) return null;
     return (await r.json()) as T;

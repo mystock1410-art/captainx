@@ -1,3 +1,5 @@
+import { fetchWithTimeout } from "./http";
+
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 
@@ -19,9 +21,10 @@ export async function getChart(
 ): Promise<YahooChart> {
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range_}&interval=${interval}`;
   try {
-    const r = await fetch(url, {
+    const r = await fetchWithTimeout(url, {
       headers: { "User-Agent": UA, Accept: "application/json" },
       cache: "no-store",
+      timeoutMs: 7000,
     });
     if (!r.ok) return empty(symbol);
     const payload = await r.json();

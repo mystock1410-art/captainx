@@ -10,6 +10,7 @@ import {
 } from "lightweight-charts";
 import { useTheme } from "next-themes";
 import { usePolling } from "@/hooks/use-polling";
+import { isVnFuturesMarketOpen } from "@/lib/market-hours";
 import { api, type DerivativeQuote } from "@/lib/api";
 import { formatChange, formatPct, formatPrice, cn } from "@/lib/utils";
 
@@ -18,15 +19,6 @@ const LABELS: Record<string, string> = {
   VN30F2M: "VN30 · 2 THÁNG",
   VN30F1Q: "VN30 · QUÝ GẦN",
 };
-
-// VN derivatives market: Mon-Fri 08:45-14:45 ICT (= 01:45-07:45 UTC)
-function isVnFuturesMarketOpen(): boolean {
-  const d = new Date();
-  const day = d.getUTCDay();
-  if (day === 0 || day === 6) return false;
-  const mins = d.getUTCHours() * 60 + d.getUTCMinutes();
-  return mins >= 105 && mins < 465;
-}
 
 export function DerivativesGrid() {
   // Re-evaluate market state every minute so the polling cadence
@@ -103,14 +95,7 @@ function DerivativeCard({ quote }: { quote: DerivativeQuote }) {
   // VN tone: green up · red down · gold flat (giá tham chiếu)
   const toneTxt = !hasData ? "text-muted-foreground" : flat ? "text-gold" : up ? "text-up" : "text-down";
 
-  // VN futures trade Mon-Fri 08:45–14:45 ICT (UTC+7) = 01:45–07:45 UTC
-  const isOpen = (() => {
-    const d = new Date();
-    const day = d.getUTCDay();
-    if (day === 0 || day === 6) return false;
-    const mins = d.getUTCHours() * 60 + d.getUTCMinutes();
-    return mins >= 105 && mins < 465;
-  })();
+  const isOpen = isVnFuturesMarketOpen();
 
   useEffect(() => {
     if (!containerRef.current) return;

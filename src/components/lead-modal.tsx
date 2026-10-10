@@ -3,10 +3,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { X, Sparkles, AlertCircle, AlertTriangle, Flag, Globe, Loader2, Minus, ExternalLink, MessageCircle, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Accept Vietnamese mobile numbers (0xx... or +84xx...) with optional spaces/dots/dashes.
 const PHONE_RE = /^(\+?84|0)[0-9 .\-]{8,15}$/;
+
+// OCBS direct-contact details shown in the account popup. Fill these in with the
+// real handles (or leave "" to hide the row) — empty by default so no placeholder
+// string ever ships to users.
+const OCBS_ZALO: string = "";
+const OCBS_PHONE: string = "";
 
 type Props = {
   open: boolean;
@@ -19,9 +26,10 @@ type FormState = {
   phone: string;
   account: string;
   location: string;
+  website: string; // honeypot — real users leave this empty
 };
 
-const EMPTY: FormState = { email: "", phone: "", account: "", location: "" };
+const EMPTY: FormState = { email: "", phone: "", account: "", location: "", website: "" };
 
 export function LeadModal({ open, onClose, onSubmitted }: Props) {
   const [form, setForm] = useState<FormState>(EMPTY);
@@ -67,6 +75,9 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
+  // Trap focus inside the form (but hand off to the OCBS popup when it's shown).
+  useFocusTrap(scrollRef, open && !showOcbs);
+
   if (!open) return null;
 
   function update<K extends keyof FormState>(key: K, value: string) {
@@ -88,7 +99,7 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
       const r = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone, account, location }),
+        body: JSON.stringify({ email, phone, account, location, website: form.website }),
       });
       const json = await r.json().catch(() => ({}));
       if (!r.ok || !json.ok) {
@@ -114,6 +125,7 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
       onClick={onClose}
       role="dialog"
       aria-modal="true"
+      aria-labelledby="lead-modal-title"
     >
       <div
         ref={scrollRef}
@@ -131,7 +143,7 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
         <div className="space-y-3 border-b border-border px-5 py-4">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-gold" />
-            <h3 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-brand">
+            <h3 id="lead-modal-title" className="text-[12px] font-semibold uppercase tracking-[0.18em] text-brand">
               Truy cập Phân tích AI
             </h3>
           </div>
@@ -150,6 +162,17 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
         <SamplePreview />
 
         <form onSubmit={handleSubmit} className="space-y-3 border-t border-border px-5 py-4">
+          {/* Honeypot: hidden from real users, bots tend to fill it. */}
+          <input
+            type="text"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            value={form.website}
+            onChange={(e) => update("website", e.target.value)}
+            className="absolute left-[-9999px] h-0 w-0 opacity-0"
+          />
           <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
             Thông tin liên hệ
           </div>
@@ -188,7 +211,7 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
           />
 
           {error && (
-            <div className="flex items-start gap-2 rounded-sm border border-down/40 bg-down/10 px-3 py-2 text-[12px] text-down">
+            <div role="alert" aria-live="assertive" className="flex items-start gap-2 rounded-sm border border-down/40 bg-down/10 px-3 py-2 text-[12px] text-down">
               <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span>{error}</span>
             </div>
@@ -230,14 +253,19 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
 }
 
 function OcbsAccountPopup({ onClose }: { onClose: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useFocusTrap(ref, true);
+  const hasContact = Boolean(OCBS_ZALO || OCBS_PHONE);
   return (
     <div
       className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
+      aria-labelledby="ocbs-popup-title"
     >
       <div
+        ref={ref}
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-md rounded-md border border-gold/40 bg-card shadow-2xl"
         style={{ boxShadow: "0 0 0 1px rgba(228,160,37,0.20), 0 0 30px rgba(228,160,37,0.25), 0 20px 50px rgba(0,0,0,0.7)" }}
@@ -253,7 +281,7 @@ function OcbsAccountPopup({ onClose }: { onClose: () => void }) {
         <div className="space-y-4 px-6 py-5">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-gold" />
-            <h3 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-brand">
+            <h3 id="ocbs-popup-title" className="text-[12px] font-semibold uppercase tracking-[0.18em] text-brand">
               Mở tài khoản OCBS
             </h3>
           </div>
@@ -273,24 +301,30 @@ function OcbsAccountPopup({ onClose }: { onClose: () => void }) {
             Mở tài khoản tại taikhoan.ocbs.com.vn
           </a>
 
-          <div className="space-y-2 rounded-sm border border-border bg-background/50 p-3">
-            <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-              Hoặc liên hệ trực tiếp
-            </p>
-            <p className="text-[13px] font-semibold text-foreground">
-              Mr X — Chuyên gia Quản lý Tài sản hàng đầu
-            </p>
-            <div className="flex items-center gap-2 text-[12px] text-foreground/85">
-              <MessageCircle className="h-3.5 w-3.5 text-gold" />
-              <span className="font-mono">Zalo:</span>
-              <span className="font-mono text-muted-foreground">xxx</span>
+          {hasContact && (
+            <div className="space-y-2 rounded-sm border border-border bg-background/50 p-3">
+              <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+                Hoặc liên hệ trực tiếp
+              </p>
+              <p className="text-[13px] font-semibold text-foreground">
+                Mr X — Chuyên gia Quản lý Tài sản hàng đầu
+              </p>
+              {OCBS_ZALO && (
+                <div className="flex items-center gap-2 text-[12px] text-foreground/85">
+                  <MessageCircle className="h-3.5 w-3.5 text-gold" />
+                  <span className="font-mono">Zalo:</span>
+                  <span className="font-mono text-muted-foreground">{OCBS_ZALO}</span>
+                </div>
+              )}
+              {OCBS_PHONE && (
+                <div className="flex items-center gap-2 text-[12px] text-foreground/85">
+                  <Phone className="h-3.5 w-3.5 text-gold" />
+                  <span className="font-mono">SĐT:</span>
+                  <span className="font-mono text-muted-foreground">{OCBS_PHONE}</span>
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-2 text-[12px] text-foreground/85">
-              <Phone className="h-3.5 w-3.5 text-gold" />
-              <span className="font-mono">Fx:</span>
-              <span className="font-mono text-muted-foreground">yyy</span>
-            </div>
-          </div>
+          )}
 
           <div className="flex justify-end">
             <a

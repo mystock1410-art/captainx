@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Plus, RotateCcw, Trash2, X } from "lucide-react";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 type Props = {
   open: boolean;
@@ -18,6 +19,8 @@ export function WatchlistModal({
 }: Props) {
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, open);
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
@@ -41,14 +44,21 @@ export function WatchlistModal({
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="watchlist-modal-title"
+    >
       <div
+        ref={dialogRef}
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-md rounded-xl border border-border bg-card text-card-foreground shadow-2xl"
       >
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <div>
-            <h2 className="text-base font-semibold">Quản lý Watchlist</h2>
+            <h2 id="watchlist-modal-title" className="text-base font-semibold">Quản lý Watchlist</h2>
             <p className="text-[10px] text-muted-foreground">Tự động sắp xếp theo A→Z · Tối đa 50 mã</p>
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground" aria-label="Đóng">

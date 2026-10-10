@@ -2,10 +2,10 @@ import Anthropic from "@anthropic-ai/sdk";
 import type { NewsItem } from "./rss";
 import type { Quote } from "./cafef";
 
-const MODEL = "claude-opus-4-7";
+const MODEL = "claude-opus-4-8";
 // Alternative cheaper models (uncomment to switch):
-// const MODEL = "claude-sonnet-4-6"; // ~½ price
-// const MODEL = "claude-haiku-4-5";  // ~⅕ price, fastest
+// const MODEL = "claude-sonnet-5";  // ~½ price
+// const MODEL = "claude-haiku-4-5"; // ~⅕ price, fastest
 
 const SYSTEM_PROMPT = `Bạn là chuyên gia phân tích thị trường tài chính. \
 Dựa CHỈ trên các tin tức và dữ liệu giá được cung cấp, đưa ra đánh giá NGẮN GỌN \

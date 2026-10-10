@@ -1,4 +1,5 @@
 import type { Quote } from "@/lib/api";
+import { fetchWithTimeout } from "./http";
 
 const BASE = "https://api.dnse.com.vn";
 
@@ -44,7 +45,7 @@ async function fetchOhlc(
   const from = now - fromOffsetSec;
   const url = `${BASE}/chart-api/v2/ohlcs/derivative?from=${from}&to=${now}&symbol=${symbol}&resolution=${resolution}`;
   try {
-    const r = await fetch(url, { headers: HEADERS, signal, cache: "no-store" });
+    const r = await fetchWithTimeout(url, { headers: HEADERS, signal, cache: "no-store", timeoutMs: 7000 });
     if (!r.ok) return null;
     return (await r.json()) as Ohlc;
   } catch {

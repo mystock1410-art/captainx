@@ -7,6 +7,10 @@ import { useWatchlist } from "@/hooks/use-watchlist";
 import { cn } from "@/lib/utils";
 import { LeadModal } from "./lead-modal";
 
+// sessionStorage key: set after the first successful lead submission so the AI
+// panel opens without re-prompting for the rest of the browser session.
+const LEAD_FLAG = "captainx.lead.submitted";
+
 function fmtAgo(ts: number): string {
   const sec = Math.max(0, Math.floor(Date.now() / 1000) - ts);
   if (sec < 60) return `${sec}s trước`;
@@ -51,15 +55,30 @@ export function MarketBriefPanel() {
 
   function handleToggle() {
     if (open) {
-      // Collapse panel; require fresh form on next open.
       setOpen(false);
       return;
     }
-    // Every open must be gated by a fresh lead submission — no session memory.
+    // Gate the first open with the lead form; remember the submission for the
+    // rest of the browser session so repeat opens don't re-prompt.
+    let submitted = false;
+    try {
+      submitted = sessionStorage.getItem(LEAD_FLAG) === "1";
+    } catch {
+      /* sessionStorage unavailable (private mode / SSR) — fall back to gating */
+    }
+    if (submitted) {
+      setOpen(true);
+      return;
+    }
     setLeadModalOpen(true);
   }
 
   function handleLeadSubmitted() {
+    try {
+      sessionStorage.setItem(LEAD_FLAG, "1");
+    } catch {
+      /* ignore persistence failure — panel still opens for this view */
+    }
     setLeadModalOpen(false);
     setOpen(true);
   }
@@ -181,7 +200,7 @@ export function MarketBriefPanel() {
           )}
 
           {!data && !error && loading && (
-            <div className="p-6 text-center text-sm text-muted-foreground">Đang gọi Claude Opus 4.7…</div>
+            <div className="p-6 text-center text-sm text-muted-foreground">Đang gọi Claude…</div>
           )}
 
           {data && (

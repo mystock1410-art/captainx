@@ -10,6 +10,7 @@ import {
 } from "lightweight-charts";
 import { useTheme } from "next-themes";
 import { Bitcoin, Droplet } from "lucide-react";
+import { isMarketOpen } from "@/lib/market-hours";
 import { formatPct, formatPrice, cn } from "@/lib/utils";
 
 function SlotLogo({ slot }: { slot: string }) {
@@ -42,38 +43,6 @@ function SlotLogo({ slot }: { slot: string }) {
     );
   }
   return null;
-}
-
-// Market session hours in UTC for open/closed indicator
-// Returns true if the market is currently open
-function isMarketOpen(slot: string): boolean {
-  const now = new Date();
-  const utcH = now.getUTCHours();
-  const utcM = now.getUTCMinutes();
-  const utcMins = utcH * 60 + utcM;
-  const day = now.getUTCDay(); // 0=Sun, 6=Sat
-
-  if (slot === "vnindex") {
-    // HOSE: Mon-Fri 02:15–09:00 UTC (09:15–16:00 ICT/GMT+7)
-    if (day === 0 || day === 6) return false;
-    return utcMins >= 135 && utcMins < 540;
-  }
-  if (slot === "dji" || slot === "ym") {
-    // NYSE/CME: Mon-Fri 13:30–20:00 UTC (pre/regular combined)
-    if (day === 0 || day === 6) return false;
-    return utcMins >= 810 && utcMins < 1200;
-  }
-  if (slot === "wti") {
-    // WTI futures trade nearly 24h Sun 23:00 – Fri 22:00 UTC
-    if (day === 6) return false; // closed Saturday
-    if (day === 0) return utcMins >= 1380; // Sun from 23:00
-    return utcMins < 1320 || utcMins >= 1380; // weekdays: closed 22:00-23:00 UTC
-  }
-  if (slot === "wtioil" || slot === "btc") {
-    // Hyperliquid perps — 24/7
-    return true;
-  }
-  return false;
 }
 
 type Props = {

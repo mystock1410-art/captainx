@@ -1,3 +1,5 @@
+import { fetchWithTimeout } from "./http";
+
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 
@@ -34,9 +36,10 @@ async function getBangGiaMap(): Promise<Map<string, BangGiaRow>> {
 
   const maps = await Promise.allSettled(
     EXCHANGES.map((ex) =>
-      fetch(BANGGIA_URL.replace("{exchange}", ex), {
+      fetchWithTimeout(BANGGIA_URL.replace("{exchange}", ex), {
         headers: { "User-Agent": UA, Referer: "https://cafef.vn/" },
         cache: "no-store",
+        timeoutMs: 7000,
       }).then((r) => (r.ok ? r.json() as Promise<BangGiaRow[]> : []))
     )
   );
@@ -80,9 +83,10 @@ const PRICE_HISTORY_URL =
 export async function getSnapshot(symbol: string): Promise<Quote | null> {
   const url = PRICE_HISTORY_URL.replace("{symbol}", symbol.toUpperCase());
   try {
-    const r = await fetch(url, {
+    const r = await fetchWithTimeout(url, {
       headers: { "User-Agent": UA },
       cache: "no-store",
+      timeoutMs: 7000,
     });
     if (!r.ok) return null;
     const payload = await r.json();
@@ -123,7 +127,7 @@ export async function getIndexChart(symbol: string): Promise<IndexChart> {
   if (!cfg) return { t: [], c: [] };
   const url = INDEX_CHART_URL.replace("{index}", String(cfg.id));
   try {
-    const r = await fetch(url, {
+    const r = await fetchWithTimeout(url, {
       headers: {
         "User-Agent": UA,
         Accept: "application/json",
@@ -131,6 +135,7 @@ export async function getIndexChart(symbol: string): Promise<IndexChart> {
         Referer: "https://m.cafef.vn/",
       },
       cache: "no-store",
+      timeoutMs: 7000,
     });
     if (!r.ok) return { t: [], c: [] };
     const payload = await r.json();

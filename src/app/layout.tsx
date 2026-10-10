@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/header";
@@ -15,9 +15,46 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = "https://captainx.vn";
+const SITE_DESC =
+  "Theo dõi VN-Index, phái sinh VN30, chỉ số thế giới, tin tức đa nguồn và phân tích AI — realtime.";
+
 export const metadata: Metadata = {
-  title: "CAPTAIN X",
-  description: "Bảng theo dõi thị trường Việt Nam realtime",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "CAPTAIN X — Terminal dữ liệu thị trường",
+    template: "%s · CAPTAIN X",
+  },
+  description: SITE_DESC,
+  applicationName: "Captain X",
+  keywords: ["chứng khoán", "VN-Index", "VN30", "phái sinh", "OCBS", "Captain X", "phân tích thị trường"],
+  authors: [{ name: "OCBS" }],
+  creator: "OCBS",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "vi_VN",
+    url: "/",
+    siteName: "Captain X",
+    title: "CAPTAIN X — Terminal dữ liệu thị trường",
+    description: SITE_DESC,
+    images: ["/ocbs-logo.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CAPTAIN X — Terminal dữ liệu thị trường",
+    description: SITE_DESC,
+    images: ["/ocbs-logo.png"],
+  },
+  robots: { index: true, follow: true },
+};
+
+export const viewport: Viewport = {
+  colorScheme: "light dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f6f5ef" },
+    { media: "(prefers-color-scheme: dark)", color: "#03070b" },
+  ],
 };
 
 export default function RootLayout({
@@ -43,7 +80,7 @@ export default function RootLayout({
           {children}
           <footer className="bar-elevated-footer">
             <div className="mx-auto flex max-w-[1600px] items-center justify-center px-3 py-3 text-center text-[9px] uppercase tracking-[0.12em] sm:px-4 sm:py-4 sm:text-[10px] sm:tracking-[0.15em]">
-              <span className="cta-blink font-semibold text-gold">Integrated Market Data Terminal</span>
+              <span className="font-semibold text-gold">Integrated Market Data Terminal</span>
             </div>
           </footer>
         </ThemeProvider>
