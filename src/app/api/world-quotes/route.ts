@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getChart } from "@/lib/server/yahoo";
+import { getVcbUsdSell, getSbvCentralUsd } from "@/lib/server/forex-vn";
 
 export const runtime = "nodejs";
 export const revalidate = 0;
@@ -50,7 +51,7 @@ const SYMBOLS: { symbol: string; label: string; category: WorldCategory }[] = [
 ];
 
 export async function GET() {
-  const [results, coffee, usdVnd] = await Promise.all([
+  const [results, coffee, usdVnd, vcbSell] = await Promise.all([
     Promise.all(
       SYMBOLS.map(async ({ symbol, label, category }): Promise<WorldQuote> => {
         const c = await getChart(symbol, "1d", "5m");
@@ -66,6 +67,7 @@ export async function GET() {
     ),
     getChart("KC=F", "1d", "5m"), // Coffee C (Arabica) — US cents/lb
     getChart("USDVND=X", "1d", "5m"), // USD → VND rate (used only for conversion)
+    getVcbUsdSell(), // Vietcombank USD sell rate (live)
   ]);
 
   // Append coffee converted to VND/kg (keep KC=F's own % move; price/change
@@ -81,6 +83,27 @@ export async function GET() {
     change: canConvert && coffee.change != null ? Math.round(coffee.change * factor) : null,
     changePct: canConvert ? coffee.changePct : null,
     unit: "VND/kg",
+  });
+
+  // USD/VND — tỷ giá trung tâm NHNN (manual/env) + Vietcombank bán ra (live).
+  // Reference rates: shown as price-only (no intraday change).
+  results.push({
+    symbol: "USDVND-TT",
+    label: "USD/VND TT",
+    category: "fx",
+    price: getSbvCentralUsd(),
+    change: null,
+    changePct: null,
+    unit: "đ",
+  });
+  results.push({
+    symbol: "USDVND-VCB",
+    label: "USD/VND VCB",
+    category: "fx",
+    price: vcbSell,
+    change: null,
+    changePct: null,
+    unit: "đ",
   });
 
   return NextResponse.json(results, {

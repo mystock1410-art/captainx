@@ -80,21 +80,22 @@ export function WorldTicker() {
 }
 
 function WorldChip({ quote }: { quote: WorldQuote }) {
-  const hasData = quote.price !== null && quote.changePct !== null;
-  const up = hasData && (quote.changePct ?? 0) >= 0;
-  const unitValue = !!quote.unit; // large integer values (e.g. VND/kg) render without decimals
+  const hasPrice = quote.price !== null;
+  const hasChange = quote.changePct !== null;
+  const up = hasChange && (quote.changePct ?? 0) >= 0;
+  const unitValue = !!quote.unit; // large integer values (e.g. VND/kg, VND rates) render without decimals
   return (
     <div className="chip-elevated inline-flex items-baseline gap-1.5 rounded-sm px-2 py-1 sm:gap-2 sm:px-2.5">
       <span
         className={cn(
           "inline-block h-1.5 w-1.5 self-center rounded-full",
-          hasData ? (up ? "bg-up" : "bg-down") : "bg-muted-foreground",
+          !hasPrice ? "bg-muted-foreground" : !hasChange ? "bg-gold" : up ? "bg-up" : "bg-down",
         )}
       />
       <span className="text-[12px] font-bold tracking-[0.02em] text-foreground sm:text-[14px] md:text-[15px]">
         {quote.label}
       </span>
-      {hasData ? (
+      {hasPrice ? (
         <>
           <span className="font-mono text-[13px] font-bold tabular-nums sm:text-[15px] md:text-base">
             {unitValue ? formatPriceInt(quote.price!) : formatPrice(quote.price!)}
@@ -114,14 +115,16 @@ function WorldChip({ quote }: { quote: WorldQuote }) {
               {unitValue ? formatChangeInt(quote.change) : formatChange(quote.change)}
             </span>
           )}
-          <span
-            className={cn(
-              "font-mono text-[10px] font-semibold tabular-nums sm:text-[11px] md:text-[12px]",
-              up ? "text-up" : "text-down",
-            )}
-          >
-            {formatPct(quote.changePct!)}
-          </span>
+          {hasChange && (
+            <span
+              className={cn(
+                "font-mono text-[10px] font-semibold tabular-nums sm:text-[11px] md:text-[12px]",
+                up ? "text-up" : "text-down",
+              )}
+            >
+              {formatPct(quote.changePct!)}
+            </span>
+          )}
         </>
       ) : (
         <span className="text-[11px] text-muted-foreground sm:text-[12px]">—</span>
