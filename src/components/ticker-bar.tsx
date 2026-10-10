@@ -5,8 +5,9 @@ import { Settings2 } from "lucide-react";
 import { useWatchlist } from "@/hooks/use-watchlist";
 import { usePolling } from "@/hooks/use-polling";
 import { isVnFuturesMarketOpen } from "@/lib/market-hours";
-import { api, type Quote } from "@/lib/api";
+import { api, type IntradayCandle, type IntradaySeries, type Quote } from "@/lib/api";
 import { formatChange, formatPct, formatPrice, cn } from "@/lib/utils";
+import { MiniCandles } from "./mini-candles";
 import { WatchlistModal } from "./watchlist-modal";
 
 // VN price-board convention:
@@ -63,6 +64,19 @@ export function TickerBar() {
     [key, hydrated, marketOpen],
   );
 
+  // Intraday candlesticks refresh far less often than the live price (5-min
+  // bars) — 60s during the session, lazily otherwise.
+  const { data: candleData } = usePolling<IntradaySeries[]>(
+    (signal) => (symbols.length ? api.intraday(symbols, signal) : Promise.resolve([] as IntradaySeries[])),
+    marketOpen ? 60_000 : 1_800_000,
+    [key, hydrated, marketOpen],
+  );
+  const candleMap = useMemo(() => {
+    const m = new Map<string, IntradayCandle[]>();
+    for (const s of candleData ?? []) m.set(s.symbol, s.candles);
+    return m;
+  }, [candleData]);
+
   const quotes = data ?? [];
 
   return (
@@ -73,8 +87,10 @@ export function TickerBar() {
             Watchlist
           </h3>
         </div>
-        <div className="grid min-w-0 flex-1 grid-cols-1 gap-1.5 sm:grid-cols-2 md:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
-          {hydrated && quotes.map((q) => <TickerChip key={q.symbol} quote={q} />)}
+        <div className="grid min-w-0 flex-1 grid-cols-1 gap-1.5 sm:grid-cols-2 md:[grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+          {hydrated && quotes.map((q) => (
+            <TickerChip key={q.symbol} quote={q} candles={candleMap.get(q.symbol) ?? []} />
+          ))}
           {(!hydrated || (loading && quotes.length === 0)) && (
             <div className="col-span-full text-xs text-muted-foreground">Đang tải watchlist…</div>
           )}
@@ -104,7 +120,7 @@ export function TickerBar() {
   );
 }
 
-function TickerChip({ quote }: { quote: Quote }) {
+function TickerChip({ quote, candles }: { quote: Quote; candles: IntradayCandle[] }) {
   const hasData = quote.price !== null && quote.changePct !== null;
   const tone = toneOf(quote);
   const [stage, setStage] = useState<"local" | "cdn" | "fallback">("local");
@@ -145,8 +161,10 @@ function TickerChip({ quote }: { quote: Quote }) {
       <span className="font-mono text-[15px] font-bold tracking-[0.04em] shrink-0">
         {quote.symbol}
       </span>
+      {/* Intraday candlestick of today's session, between the ticker and price */}
+      <MiniCandles candles={candles} className="h-7 min-w-0 flex-1" />
       {hasData ? (
-        <div className="ml-auto flex items-baseline gap-1.5 whitespace-nowrap font-mono tabular-nums">
+        <div className="flex shrink-0 items-baseline gap-1.5 whitespace-nowrap font-mono tabular-nums">
           <span className={cn("min-w-[5ch] text-right text-base font-bold", toneTxt)}>
             {formatPrice(quote.price!)}
           </span>
@@ -158,7 +176,7 @@ function TickerChip({ quote }: { quote: Quote }) {
           </span>
         </div>
       ) : (
-        <span className="ml-auto text-muted-foreground">—</span>
+        <span className="shrink-0 text-muted-foreground">—</span>
       )}
     </div>
   );

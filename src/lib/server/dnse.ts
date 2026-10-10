@@ -129,3 +129,94 @@ async function getOne(symbol: string, signal?: AbortSignal): Promise<DerivativeQ
 export async function getDerivativeQuotes(signal?: AbortSignal): Promise<DerivativeQuote[]> {
   return Promise.all(DERIVATIVES.map(({ symbol }) => getOne(symbol, signal)));
 }
+
+/* ------------------------------------------------------------------ *
+ * Per-stock intraday candles (for the watchlist mini candlestick).
+ * Uses DNSE's /ohlcs/stock (same host/auth as the derivative feed).
+ * ------------------------------------------------------------------ */
+
+export type Candle = { o: number; h: number; l: number; c: number };
+export type IntradaySeries = { symbol: string; candles: Candle[] };
+
+async function fetchStockOhlc(
+  symbol: string,
+  resolution: string,
+  fromOffsetSec: number,
+  signal?: AbortSignal,
+): Promise<Ohlc | null> {
+  const now = Math.floor(Date.now() / 1000);
+  const from = now - fromOffsetSec;
+  const url = `${BASE}/chart-api/v2/ohlcs/stock?from=${from}&to=${now}&symbol=${encodeURIComponent(symbol)}&resolution=${resolution}`;
+  try {
+    const r = await fetchWithTimeout(url, { headers: HEADERS, signal, cache: "no-store", timeoutMs: 7000 });
+    if (!r.ok) return null;
+    return (await r.json()) as Ohlc;
+  } catch {
+    return null;
+  }
+}
+
+/** Index where the most recent trading session begins in a candle array. */
+function latestSessionStart(t: number[]): number {
+  if (!t.length) return 0;
+  const latestDate = vnDateOf(t[t.length - 1]);
+  const start = t.findIndex((ts) => vnDateOf(ts) === latestDate);
+  return start < 0 ? 0 : start;
+}
+
+/** Downsample OHLC arrays into at most `maxN` merged candles (keeps o/h/l/c). */
+function aggregate(o: number[], h: number[], l: number[], c: number[], maxN: number): Candle[] {
+  const n = Math.min(o.length, h.length, l.length, c.length);
+  if (!n) return [];
+  const bucket = Math.max(1, Math.ceil(n / maxN));
+  const out: Candle[] = [];
+  for (let i = 0; i < n; i += bucket) {
+    const end = Math.min(i + bucket, n);
+    let hi = h[i];
+    let lo = l[i];
+    for (let j = i + 1; j < end; j++) {
+      if (h[j] > hi) hi = h[j];
+      if (l[j] < lo) lo = l[j];
+    }
+    out.push({ o: o[i], h: hi, l: lo, c: c[end - 1] });
+  }
+  return out;
+}
+
+async function getOneIntraday(symbol: string, signal?: AbortSignal): Promise<Candle[]> {
+  // 5-min bars for today; fall back to a wider window (covers weekends/holidays)
+  // then trim to just the latest session so the sparkline shows one day.
+  let ohlc = await fetchStockOhlc(symbol, "5", 8 * 3600, signal);
+  if (!ohlc || !ohlc.c?.length) ohlc = await fetchStockOhlc(symbol, "5", 5 * 24 * 3600, signal);
+  if (!ohlc || !ohlc.c?.length) return [];
+  const s = latestSessionStart(ohlc.t);
+  return aggregate(
+    ohlc.o.slice(s),
+    ohlc.h.slice(s),
+    ohlc.l.slice(s),
+    ohlc.c.slice(s),
+    28,
+  );
+}
+
+/** Run `fn` over `items` with bounded concurrency (kind to DNSE under 60 symbols). */
+async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const out = new Array<R>(items.length);
+  let cursor = 0;
+  async function worker() {
+    while (cursor < items.length) {
+      const idx = cursor++;
+      out[idx] = await fn(items[idx]);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return out;
+}
+
+export async function getStockIntraday(symbols: string[], signal?: AbortSignal): Promise<IntradaySeries[]> {
+  const list = symbols.slice(0, 60);
+  return mapLimit(list, 8, async (sym) => ({
+    symbol: sym.toUpperCase(),
+    candles: await getOneIntraday(sym, signal),
+  }));
+}
