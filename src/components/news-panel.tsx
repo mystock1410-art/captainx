@@ -71,7 +71,10 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
   );
 
   const hotItems = useMemo(
-    () => merged.filter((i) => i.breaking && active.includes(i.source)).slice(0, 3),
+    () =>
+      merged
+        .filter((i) => (i.breaking || i.important) && active.includes(i.source))
+        .slice(0, 3),
     [merged, active],
   );
 
@@ -256,7 +259,7 @@ function HotNewsCard({
         <div className="flex items-center gap-2">
           <Flame className="h-3.5 w-3.5 text-down" />
           <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-down">
-            Tin nóng mới nhất
+            Hot News
           </span>
         </div>
         <span className="font-mono text-[10px] uppercase tracking-wider text-down/70">
@@ -268,7 +271,7 @@ function HotNewsCard({
         <p className="flex flex-1 items-center justify-center py-1 text-center text-xs text-down/60">Đang tải…</p>
       ) : items.length === 0 ? (
         <p className="flex flex-1 items-center justify-center py-1 text-center text-xs text-down/60">
-          Chưa có tin nóng trong các nguồn đang bật.
+          Chưa có tin nóng / quan trọng trong các nguồn đang bật.
         </p>
       ) : (
         <ul className="flex-1 space-y-1">
