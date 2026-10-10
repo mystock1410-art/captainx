@@ -1,18 +1,15 @@
 import { NextResponse } from "next/server";
 import { getHeadlines } from "@/lib/server/rss";
-import { getPosts } from "@/lib/server/fireant";
 
 export const runtime = "nodejs";
-export const revalidate = 90;
+export const revalidate = 3600; // hourly
 
+// Domestic news now comes solely from the Cafef/Vietstock/Vietnambiz stock
+// feeds (served by /api/news). This endpoint is kept for the panel's second
+// bucket but no longer mixes in VnExpress/FireAnt.
 export async function GET() {
-  const [rssItems, faItems] = await Promise.all([
-    getHeadlines(40),
-    getPosts(30),
-  ]);
-  const merged = [...rssItems, ...faItems];
-  merged.sort((a, b) => (b.published ?? "").localeCompare(a.published ?? ""));
-  return NextResponse.json(merged.slice(0, 60), {
-    headers: { "Cache-Control": "public, s-maxage=90, stale-while-revalidate=30" },
+  const data = await getHeadlines(60);
+  return NextResponse.json(data, {
+    headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=600" },
   });
 }

@@ -13,6 +13,8 @@ const STYLES: Record<string, string> = {
   MKT: "bg-[#0a66c2] text-white",
   INV: "bg-[#ff7a00] text-white",
   FJ: "bg-[#16a34a] text-white",
+  Yahoo: "bg-[#6001d2] text-white",
+  Bloomberg: "bg-[#000000] text-white",
 };
 
 export function SourceBadge({ source, className }: { source: string; className?: string }) {

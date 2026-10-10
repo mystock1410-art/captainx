@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Plus, RotateCcw, Trash2, X } from "lucide-react";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { WATCHLIST_MAX } from "@/hooks/use-watchlist";
 
 type Props = {
   open: boolean;
@@ -36,9 +37,11 @@ export function WatchlistModal({
 
   if (!open || typeof document === "undefined") return null;
 
+  const full = symbols.length >= WATCHLIST_MAX;
+
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || full) return;
     onAdd(input);
     setInput("");
   }
@@ -59,28 +62,42 @@ export function WatchlistModal({
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <div>
             <h2 id="watchlist-modal-title" className="text-base font-semibold">Quản lý Watchlist</h2>
-            <p className="text-[10px] text-muted-foreground">Tự động sắp xếp theo A→Z · Tối đa 50 mã</p>
+            <p className="text-[10px] text-muted-foreground">
+              Tự động sắp xếp theo A→Z ·{" "}
+              <span className={full ? "font-semibold text-gold" : ""}>
+                {symbols.length}/{WATCHLIST_MAX} mã
+              </span>
+            </p>
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground" aria-label="Đóng">
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <form onSubmit={submit} className="flex gap-2 px-5 pt-4">
-          <input
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value.toUpperCase())}
-            placeholder="Thêm mã, ví dụ FPT..."
-            maxLength={10}
-            className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-foreground/40"
-          />
-          <button
-            type="submit"
-            className="inline-flex items-center gap-1 rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background hover:opacity-90"
-          >
-            <Plus className="h-4 w-4" /> Thêm
-          </button>
+        <form onSubmit={submit} className="flex flex-col gap-1.5 px-5 pt-4">
+          <div className="flex gap-2">
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value.toUpperCase())}
+              placeholder="Thêm mã, ví dụ FPT..."
+              maxLength={10}
+              disabled={full}
+              className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-foreground/40 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={full}
+              className="inline-flex items-center gap-1 rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Plus className="h-4 w-4" /> Thêm
+            </button>
+          </div>
+          {full && (
+            <p role="alert" className="text-[11px] text-gold">
+              Đã đạt tối đa {WATCHLIST_MAX} mã. Xóa bớt để thêm mã mới.
+            </p>
+          )}
         </form>
 
         <div className="max-h-[50vh] overflow-y-auto px-5 py-4">

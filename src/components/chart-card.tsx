@@ -9,9 +9,9 @@ import {
   type UTCTimestamp,
 } from "lightweight-charts";
 import { useTheme } from "next-themes";
-import { Bitcoin, Droplet } from "lucide-react";
+import { Bitcoin, Coffee, Droplet } from "lucide-react";
 import { isMarketOpen } from "@/lib/market-hours";
-import { formatPct, formatPrice, cn } from "@/lib/utils";
+import { formatChangeInt, formatPct, formatPrice, formatPriceInt, cn } from "@/lib/utils";
 
 function SlotLogo({ slot }: { slot: string }) {
   if (slot === "vnindex") {
@@ -42,6 +42,13 @@ function SlotLogo({ slot }: { slot: string }) {
       </span>
     );
   }
+  if (slot === "coffee") {
+    return (
+      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#6f4e37] ring-1 ring-white/10">
+        <Coffee className="h-3 w-3 text-white" />
+      </span>
+    );
+  }
   return null;
 }
 
@@ -55,12 +62,13 @@ type Props = {
   changePct: number | null;
   t: number[];
   c: number[];
+  unit?: string;
   loading?: boolean;
   error?: string | null;
 };
 
 export function ChartCard({
-  slot, label, name, symbol, price, change, changePct, t, c, loading, error,
+  slot, label, name, symbol, price, change, changePct, t, c, unit, loading, error,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -163,8 +171,13 @@ export function ChartCard({
           {price !== null ? (
             <>
               <span className="font-mono text-base font-bold tabular-nums">
-                {formatPrice(price)}
+                {unit ? formatPriceInt(price) : formatPrice(price)}
               </span>
+              {unit && (
+                <span className="font-mono text-[9px] font-medium text-muted-foreground">
+                  {unit}
+                </span>
+              )}
               {changePct !== null && change !== null && (
                 <span
                   className={cn(
@@ -172,8 +185,7 @@ export function ChartCard({
                     up ? "text-up" : "text-down"
                   )}
                 >
-                  {formatPct(changePct)} ({change >= 0 ? "+" : ""}
-                  {change.toFixed(2)})
+                  {formatPct(changePct)} ({unit ? formatChangeInt(change) : `${change >= 0 ? "+" : ""}${change.toFixed(2)}`})
                 </span>
               )}
             </>

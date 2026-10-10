@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Settings2 } from "lucide-react";
 import { useWatchlist } from "@/hooks/use-watchlist";
 import { usePolling } from "@/hooks/use-polling";
+import { isVnFuturesMarketOpen } from "@/lib/market-hours";
 import { api, type Quote } from "@/lib/api";
 import { formatChange, formatPct, formatPrice, cn } from "@/lib/utils";
 import { WatchlistModal } from "./watchlist-modal";
@@ -45,11 +46,21 @@ export function TickerBar() {
   const { symbols, hydrated, add, remove, reset } = useWatchlist();
   const [open, setOpen] = useState(false);
 
+  // Live 5s refresh only during VN trading hours (Mon–Fri 08:45–14:45 ICT);
+  // outside the session prices are static, so poll lazily (60s). Re-evaluate
+  // the session each minute so the cadence flips at open/close automatically.
+  const [marketOpen, setMarketOpen] = useState(() => isVnFuturesMarketOpen());
+  useEffect(() => {
+    const id = setInterval(() => setMarketOpen(isVnFuturesMarketOpen()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+  const pollMs = marketOpen ? 5_000 : 60_000;
+
   const key = useMemo(() => symbols.join(","), [symbols]);
   const { data, loading, error } = usePolling<Quote[]>(
     (signal) => api.quotes(symbols, signal),
-    3_000,
-    [key, hydrated],
+    pollMs,
+    [key, hydrated, marketOpen],
   );
 
   const quotes = data ?? [];
@@ -62,7 +73,7 @@ export function TickerBar() {
             Watchlist
           </h3>
         </div>
-        <div className="grid flex-1 grid-cols-1 gap-1.5 sm:grid-cols-2 md:[grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
+        <div className="grid min-w-0 flex-1 grid-cols-1 gap-1.5 sm:grid-cols-2 md:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
           {hydrated && quotes.map((q) => <TickerChip key={q.symbol} quote={q} />)}
           {(!hydrated || (loading && quotes.length === 0)) && (
             <div className="col-span-full text-xs text-muted-foreground">Đang tải watchlist…</div>

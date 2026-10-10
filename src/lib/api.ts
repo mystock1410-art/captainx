@@ -40,6 +40,8 @@ export type ChartPayload = {
   changePct: number | null;
   t: number[];
   c: number[];
+  /** Unit suffix shown after the price (e.g. "VND/kg" for converted coffee). */
+  unit?: string;
 };
 
 export type NewsItem = {

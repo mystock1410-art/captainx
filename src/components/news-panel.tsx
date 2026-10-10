@@ -33,7 +33,8 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
 
   const liveFetcher = variant === "en" ? api.newsEn : api.news;
   const headlineFetcher = variant === "en" ? api.headlinesEn : api.headlines;
-  const interval = variant === "en" ? 120_000 : 60_000;
+  const interval = 3_600_000; // 1 hour (both VN & EN)
+  const hasHeadlines = headlineSources.length > 0;
 
   const { data: live, loading: loadingLive, error: errorLive } = usePolling<NewsItem[]>(
     (signal) => liveFetcher(signal),
@@ -41,9 +42,9 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
     [variant, "live"],
   );
   const { data: heads, loading: loadingHeads, error: errorHeads } = usePolling<NewsItem[]>(
-    (signal) => headlineFetcher(signal),
+    (signal) => (hasHeadlines ? headlineFetcher(signal) : Promise.resolve([] as NewsItem[])),
     interval,
-    [variant, "heads"],
+    [variant, "heads", hasHeadlines],
   );
 
   const merged = useMemo(() => {

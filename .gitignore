@@ -40,3 +40,4 @@ _crop3.py
 # Brand assets (kept locally, not in repo)
 Brand Guidelines*.pdf
 .vercel
+.env*

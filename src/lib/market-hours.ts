@@ -34,6 +34,12 @@ export function isMarketOpen(slot: string): boolean {
     if (day === 0) return mins >= 1380; // Sun from 23:00
     return mins < 1320 || mins >= 1380; // weekdays: closed 22:00–23:00 UTC
   }
+  if (slot === "coffee") {
+    // ICE Coffee C (KC): Mon–Fri ~04:15–13:30 ET → ~08:15–18:30 UTC
+    // (broadened to span both EST/EDT). Weekends closed.
+    if (day === 0 || day === 6) return false;
+    return mins >= 495 && mins < 1110;
+  }
   if (slot === "wtioil" || slot === "btc") {
     // Hyperliquid perps — 24/7
     return true;

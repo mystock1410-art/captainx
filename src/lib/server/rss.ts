@@ -1,31 +1,25 @@
 import crypto from "crypto";
 import { parseStringPromise } from "xml2js";
 
+// Domestic (VN) — only the stock-market sections of Cafef, Vietstock and
+// Vietnambiz. Each page's ".rss" twin is the live feed for that section.
 const LIVE_FEEDS: [string, string][] = [
   ["Cafef", "https://cafef.vn/thi-truong-chung-khoan.rss"],
-  ["Cafef", "https://cafef.vn/tai-chinh-ngan-hang.rss"],
-  ["Vietstock", "https://vietstock.vn/830/chung-khoan/co-phieu.rss"],
-  ["Vietnambiz", "https://vietnambiz.vn/rss/chung-khoan.rss"],
+  ["Vietstock", "https://vietstock.vn/830/chung-khoan.rss"],
+  ["Vietnambiz", "https://vietnambiz.vn/chung-khoan.rss"],
 ];
 
-const HEADLINE_FEEDS: [string, string][] = [
-  ["VnExpress", "https://vnexpress.net/rss/kinh-doanh.rss"],
-  ["VnExpress", "https://vnexpress.net/rss/chung-khoan.rss"],
-];
+const HEADLINE_FEEDS: [string, string][] = [];
 
+// International (EN) — only Yahoo Finance latest news + Bloomberg markets.
+// (Yahoo's old /news/rssindex is dead; this ^GSPC headline feed is the live
+// substitute. Bloomberg's /asia has no RSS; markets/news.rss is Asia-heavy.)
 const LIVE_FEEDS_EN: [string, string][] = [
-  ["AJ", "https://www.aljazeera.com/xml/rss/all.xml"],
-  ["CNN", "http://rss.cnn.com/rss/edition.rss"],
-  ["CNN", "http://rss.cnn.com/rss/cnn_world.rss"],
-  ["WSJ", "https://feeds.a.dj.com/rss/RSSWorldNews.xml"],
-  ["WSJ", "https://feeds.a.dj.com/rss/RSSMarketsMain.xml"],
+  ["Yahoo", "https://feeds.finance.yahoo.com/rss/2.0/headline?s=^GSPC&region=US&lang=en-US"],
+  ["Bloomberg", "https://www.bloomberg.com/feeds/markets/news.rss"],
 ];
 
-const HEADLINE_FEEDS_EN: [string, string][] = [
-  ["MKT", "https://feeds.marketwatch.com/marketwatch/topstories/"],
-  ["MKT", "https://feeds.marketwatch.com/marketwatch/realtimeheadlines/"],
-  ["INV", "https://www.investing.com/rss/news.rss"],
-];
+const HEADLINE_FEEDS_EN: [string, string][] = [];
 
 const BREAKING_KEYWORDS = [
   "khẩn", "nóng", "vừa", "breaking", "cấp tốc",
@@ -63,7 +57,13 @@ function stripHtml(s: string | undefined | null): string {
 function toIso(raw: string | undefined | null): string | null {
   if (!raw) return null;
   try {
-    const d = new Date(raw);
+    // Some feeds (e.g. Cafef) emit a 2-digit year — "Sat, 10 Oct 26 13:04:00
+    // +0700" — which Date parses inconsistently. Expand "DD Mon YY" → "20YY"
+    // so the item sorts correctly; 4-digit years are left untouched.
+    const s = String(raw)
+      .trim()
+      .replace(/(\d{1,2}\s+[A-Za-z]{3,}\s+)(\d{2})(\s+\d{1,2}:)/, (_, a, yy, c) => `${a}20${yy}${c}`);
+    const d = new Date(s);
     if (!isNaN(d.getTime())) return d.toISOString();
   } catch {}
   return null;
@@ -84,7 +84,7 @@ async function fetchOne(source: string, url: string): Promise<NewsItem[]> {
   try {
     const r = await fetch(url, {
       headers: { "User-Agent": UA, "Accept": "application/rss+xml, application/xml, text/xml, */*" },
-      next: { revalidate: 60 },
+      next: { revalidate: 3600 }, // hourly refresh
     });
     if (!r.ok) return [];
     const xml = await r.text();
@@ -104,10 +104,11 @@ async function fetchOne(source: string, url: string): Promise<NewsItem[]> {
       );
       if (!title) return [];
       const linkObj = entry.link as Record<string, unknown> | null | undefined;
-      const link =
-        (typeof entry.link === "object" && entry.link !== null
+      const link = (
+        ((typeof entry.link === "object" && entry.link !== null
           ? ((linkObj?.$ as Record<string, unknown>)?.href ?? linkObj?._)
-          : entry.link) as string || "";
+          : entry.link) as string) || ""
+      ).replace(/^http:\/\//i, "https://"); // some feeds (Vietstock) emit http links
       const summary = stripHtml(
         (entry.description || entry.summary || entry["content:encoded"]) as string
       );

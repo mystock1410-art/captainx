@@ -5,9 +5,9 @@ import { NewsPanel } from "@/components/news-panel";
 import { MarketBriefPanel } from "@/components/market-brief";
 
 const VN_LIVE_SOURCES = ["Cafef", "Vietstock", "Vietnambiz"] as const;
-const VN_HEADLINE_SOURCES = ["VnExpress", "FireAnt"] as const;
-const EN_LIVE_SOURCES = ["AJ", "CNN", "WSJ"] as const;
-const EN_HEADLINE_SOURCES = ["MKT", "INV"] as const;
+const VN_HEADLINE_SOURCES = [] as const;
+const EN_LIVE_SOURCES = ["Yahoo", "Bloomberg"] as const;
+const EN_HEADLINE_SOURCES = [] as const;
 
 export default function Page() {
   return (

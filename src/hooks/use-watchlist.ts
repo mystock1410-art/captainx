@@ -5,10 +5,13 @@ import { DEFAULT_WATCHLIST } from "@/lib/mock-data";
 
 const KEY = "captainx.watchlist.v1";
 
+/** UI/storage cap: watchlist holds at most this many symbols. */
+export const WATCHLIST_MAX = 60;
+
 function sortSymbols(list: string[]): string[] {
-  return [...new Set(list.map((s) => s.toUpperCase()))].sort((a, b) =>
-    a.localeCompare(b, "en")
-  );
+  return [...new Set(list.map((s) => s.toUpperCase()))]
+    .sort((a, b) => a.localeCompare(b, "en"))
+    .slice(0, WATCHLIST_MAX);
 }
 
 export function useWatchlist() {
@@ -38,7 +41,10 @@ export function useWatchlist() {
   const add = useCallback((sym: string) => {
     const s = sym.trim().toUpperCase();
     if (!s) return;
-    setSymbols((prev) => (prev.includes(s) ? prev : sortSymbols([...prev, s])));
+    setSymbols((prev) => {
+      if (prev.includes(s) || prev.length >= WATCHLIST_MAX) return prev;
+      return sortSymbols([...prev, s]);
+    });
   }, []);
 
   const remove = useCallback((sym: string) => {

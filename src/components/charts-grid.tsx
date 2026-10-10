@@ -11,6 +11,7 @@ const SLOTS = [
   { slot: "ym", label: "DJ FUTURES", pollMs: 15_000 },
   { slot: "wtioil", label: "WTIOIL(F)", pollMs: 3_000 },
   { slot: "btc", label: "BITCOIN", pollMs: 3_000 },
+  { slot: "coffee", label: "CÀ PHÊ", pollMs: 1_800_000 }, // 30 min
 ] as const;
 
 export function ChartsGrid() {
@@ -21,7 +22,7 @@ export function ChartsGrid() {
           X Index
         </h3>
       </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
         {SLOTS.map((s) => (
           <ChartSlot key={s.slot} slot={s.slot} label={s.label} pollMs={s.pollMs} />
         ))}
@@ -47,6 +48,7 @@ function ChartSlot({ slot, label, pollMs }: { slot: string; label: string; pollM
       changePct={data?.changePct ?? null}
       t={data?.t ?? []}
       c={data?.c ?? []}
+      unit={data?.unit}
       loading={loading}
       error={error}
     />

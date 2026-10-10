@@ -10,7 +10,12 @@ export const dynamic = "force-dynamic";
 type Target =
   | { provider: "cafef-index"; symbol: string; name: string; cacheS: number }
   | { provider: "yahoo"; symbol: string; name: string; cacheS: number }
+  | { provider: "coffee-vnd"; name: string; cacheS: number }
   | { provider: "hyperliquid"; coin: string; dex: string; displaySymbol: string; name: string; cacheS: number };
+
+// KC=F (Coffee C, Arabica) is quoted in US cents/lb → convert to VND/kg:
+//   VND/kg = (cents/lb) × (VND_per_USD × LB_PER_KG / 100)
+const LB_PER_KG = 2.2046226218;
 
 // cacheS = upper-bound CDN cache TTL aligned to each source's realistic update freq:
 //   Cafef VNINDEX intraday → ~10s
@@ -37,6 +42,9 @@ const CHART_TARGETS: Record<string, Target> = {
     name: "Bitcoin Perp · Hyperliquid",
     cacheS: 3,
   },
+  // Coffee C (Arabica) converted to VND/kg — same figure as Global Markets ·
+  // Commodities. Moves slowly → cache 30 min to match the dashboard refresh.
+  coffee: { provider: "coffee-vnd", name: "Cà phê (Arabica)", cacheS: 1800 },
 };
 
 function cacheHeader(s: number) {
@@ -68,6 +76,31 @@ export async function GET(
         changePct: snap?.changePct ?? null,
         t: chart.t,
         c: chart.c,
+      },
+      { headers: cacheHeader(target.cacheS) }
+    );
+  }
+
+  if (target.provider === "coffee-vnd") {
+    const [kc, fx] = await Promise.all([
+      yahooChart("KC=F", "1d", "5m"),
+      yahooChart("USDVND=X", "1d", "5m"),
+    ]);
+    const rate = fx.price;
+    const factor = rate != null ? (rate / 100) * LB_PER_KG : null;
+    const conv = (v: number | null) =>
+      factor != null && v != null ? Math.round(v * factor) : null;
+    return NextResponse.json(
+      {
+        slot,
+        name: target.name,
+        symbol: "KC=F",
+        unit: "VND/kg",
+        price: conv(kc.price),
+        change: conv(kc.change),
+        changePct: kc.changePct,
+        t: kc.t,
+        c: kc.c.map((v) => (factor != null && Number.isFinite(v) ? Math.round(v * factor) : v)),
       },
       { headers: cacheHeader(target.cacheS) }
     );
