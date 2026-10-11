@@ -10,9 +10,11 @@ import {
 } from "lightweight-charts";
 import { useTheme } from "next-themes";
 import { usePolling } from "@/hooks/use-polling";
+import { useCollapsed } from "@/hooks/use-collapsed";
 import { isVnFuturesMarketOpen } from "@/lib/market-hours";
 import { api, type DerivativeQuote } from "@/lib/api";
 import { formatChange, formatPct, formatPrice, cn } from "@/lib/utils";
+import { CollapseButton } from "./collapse-button";
 
 const LABELS: Record<string, string> = {
   VN30F1M: "VN30 · 1 THÁNG",
@@ -34,27 +36,31 @@ export function DerivativesGrid() {
     marketOpen ? 1_000 : 60_000,
     [marketOpen],
   );
+  const { collapsed, toggle } = useCollapsed("derivatives");
 
   const items = data ?? [];
 
   return (
     <section className="space-y-2">
-      <div className="flex items-baseline gap-2 border-l-2 border-gold pl-2.5">
+      <div className="flex items-center justify-between gap-2 border-l-2 border-gold pl-2.5">
         <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
           Phái Sinh · VN30 Futures
         </h3>
+        <CollapseButton collapsed={collapsed} onClick={toggle} label="Phái Sinh" />
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {items.length === 0 ? (
-          <>
-            <CardSkeleton symbol="VN30F1M" />
-            <CardSkeleton symbol="VN30F2M" />
-            <CardSkeleton symbol="VN30F1Q" />
-          </>
-        ) : (
-          items.map((q) => <DerivativeCard key={q.symbol} quote={q} />)
-        )}
-      </div>
+      {!collapsed && (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {items.length === 0 ? (
+            <>
+              <CardSkeleton symbol="VN30F1M" />
+              <CardSkeleton symbol="VN30F2M" />
+              <CardSkeleton symbol="VN30F1Q" />
+            </>
+          ) : (
+            items.map((q) => <DerivativeCard key={q.symbol} quote={q} />)
+          )}
+        </div>
+      )}
     </section>
   );
 }

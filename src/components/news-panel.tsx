@@ -3,8 +3,10 @@
 import { useMemo, useState } from "react";
 import { ChevronDown, ChevronUp, Flame } from "lucide-react";
 import { usePolling } from "@/hooks/use-polling";
+import { useCollapsed } from "@/hooks/use-collapsed";
 import { api, type NewsItem } from "@/lib/api";
 import { SourceBadge } from "./source-badge";
+import { CollapseButton } from "./collapse-button";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -30,6 +32,7 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
   const [importantOnly, setImportantOnly] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const { collapsed: sectionCollapsed, toggle: toggleSection } = useCollapsed(`news-${variant}`);
 
   const liveFetcher = variant === "en" ? api.newsEn : api.news;
   const headlineFetcher = variant === "en" ? api.headlinesEn : api.headlines;
@@ -96,9 +99,14 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
   return (
     <section className="flex flex-col gap-3 lg:row-span-3 lg:grid lg:grid-rows-subgrid lg:gap-3">
       <div className="flex flex-col gap-2.5 border-l-2 border-brand pl-2.5">
-        <h3 className="text-[13px] font-semibold uppercase leading-none tracking-[0.18em] text-brand">
-          {title}
-        </h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="text-[13px] font-semibold uppercase leading-none tracking-[0.18em] text-brand">
+            {title}
+          </h3>
+          <CollapseButton collapsed={sectionCollapsed} onClick={toggleSection} label={title} />
+        </div>
+        {!sectionCollapsed && (
+          <>
         <div className="flex flex-wrap gap-1.5">
           {allSources.map((s) => (
             <button
@@ -133,8 +141,12 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
             Quan trọng
           </label>
         </div>
+          </>
+        )}
       </div>
 
+      {!sectionCollapsed && (
+        <>
       <HotNewsCard items={hotItems} loading={loading && !hasData} variant={variant} />
 
       <article className="card-elevated rounded-sm">
@@ -241,6 +253,8 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
           </div>
         )}
       </article>
+        </>
+      )}
     </section>
   );
 }

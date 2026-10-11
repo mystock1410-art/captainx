@@ -1,7 +1,9 @@
 "use client";
 
 import { ChartCard } from "./chart-card";
+import { CollapseButton } from "./collapse-button";
 import { usePolling } from "@/hooks/use-polling";
+import { useCollapsed } from "@/hooks/use-collapsed";
 import { api, type ChartPayload } from "@/lib/api";
 
 const SLOTS = [
@@ -15,18 +17,22 @@ const SLOTS = [
 ] as const;
 
 export function ChartsGrid() {
+  const { collapsed, toggle } = useCollapsed("x-index");
   return (
     <section className="space-y-2">
-      <div className="flex items-baseline gap-2 border-l-2 border-gold pl-2.5">
+      <div className="flex items-center justify-between gap-2 border-l-2 border-gold pl-2.5">
         <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
           X Index
         </h3>
+        <CollapseButton collapsed={collapsed} onClick={toggle} label="X Index" />
       </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
-        {SLOTS.map((s) => (
-          <ChartSlot key={s.slot} slot={s.slot} label={s.label} pollMs={s.pollMs} />
-        ))}
-      </div>
+      {!collapsed && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+          {SLOTS.map((s) => (
+            <ChartSlot key={s.slot} slot={s.slot} label={s.label} pollMs={s.pollMs} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

@@ -2,9 +2,11 @@
 
 import { useMemo } from "react";
 import { usePolling } from "@/hooks/use-polling";
+import { useCollapsed } from "@/hooks/use-collapsed";
 import { isMarketOpen } from "@/lib/market-hours";
 import { api, type MarketAnalyze, type ForeignFlow } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { CollapseButton } from "./collapse-button";
 
 const PURPLE = "#8b5cf6";
 
@@ -24,18 +26,23 @@ export function VniMarketInfo() {
     open ? 20_000 : 300_000,
     [open],
   );
+  const { collapsed, toggle } = useCollapsed("vni-market");
 
   return (
     <section className="space-y-2">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-l-2 border-gold pl-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-l-2 border-gold pl-2.5">
         <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
           VNI Daily Market Info
         </h3>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-          HOSE · Tỷ đồng{data?.asOf ? ` · ${data.asOf}` : ""}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+            HOSE · Tỷ đồng{data?.asOf ? ` · ${data.asOf}` : ""}
+          </span>
+          <CollapseButton collapsed={collapsed} onClick={toggle} label="VNI Daily Market Info" />
+        </div>
       </div>
 
+      {!collapsed && (
       <div className="card-elevated space-y-4 rounded-sm p-3 sm:p-4">
         {error && !data ? (
           <p className="py-6 text-center text-sm text-down">Lỗi tải dữ liệu: {error}</p>
@@ -51,6 +58,7 @@ export function VniMarketInfo() {
           </>
         )}
       </div>
+      )}
     </section>
   );
 }

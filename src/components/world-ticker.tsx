@@ -1,8 +1,10 @@
 "use client";
 
 import { usePolling } from "@/hooks/use-polling";
+import { useCollapsed } from "@/hooks/use-collapsed";
 import { api, type WorldCategory, type WorldQuote } from "@/lib/api";
 import { formatChange, formatChangeInt, formatPct, formatPrice, formatPriceInt, cn } from "@/lib/utils";
+import { CollapseButton } from "./collapse-button";
 
 const CATEGORIES: { key: WorldCategory; label: string }[] = [
   { key: "asia", label: "Asia" },
@@ -19,6 +21,7 @@ export function WorldTicker() {
     30_000,
     [],
   );
+  const { collapsed, toggle } = useCollapsed("global-markets");
 
   const quotes = data ?? [];
 
@@ -49,14 +52,15 @@ export function WorldTicker() {
 
   return (
     <div className="card-elevated divide-y divide-border rounded-sm">
-      <div className="flex items-center px-3 py-1.5">
+      <div className="flex items-center justify-between px-3 py-1.5">
         <div className="flex items-center border-l-2 border-gold pl-2.5">
           <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
             Global Markets
           </h3>
         </div>
+        <CollapseButton collapsed={collapsed} onClick={toggle} label="Global Markets" />
       </div>
-      {CATEGORIES.map(({ key, label }) => {
+      {!collapsed && CATEGORIES.map(({ key, label }) => {
         const items = grouped[key];
         if (!items || items.length === 0) return null;
         return (
