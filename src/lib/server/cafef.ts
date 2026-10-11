@@ -20,11 +20,30 @@ export type Quote = {
 };
 
 type BangGiaRow = {
-  a: string;   // symbol
-  e: number;   // current price (nghìn đồng)
-  w: number;   // reference price
-  k: number;   // change amount
+  a: string;            // symbol
+  e: number;            // current price (nghìn đồng)
+  w: number;            // session low / reference-ish
+  k: number;            // change amount
+  l?: number;           // last matched price (nghìn đồng)
+  x?: number;           // foreign BUY volume (shares)
+  y?: number;           // foreign SELL volume (shares)
+  n?: number;           // total matched volume
+  totalvolume?: number; // total matched volume
+  Time?: string;        // "HH:MM dd/MM/yyyy"
 };
+
+async function fetchBangGiaRows(exchange: string): Promise<BangGiaRow[]> {
+  try {
+    const r = await fetchWithTimeout(BANGGIA_URL.replace("{exchange}", exchange), {
+      headers: { "User-Agent": UA, Referer: "https://cafef.vn/" },
+      cache: "no-store",
+      timeoutMs: 7000,
+    });
+    return r.ok ? ((await r.json()) as BangGiaRow[]) : [];
+  } catch {
+    return [];
+  }
+}
 
 let bangGiaCache: Map<string, BangGiaRow> | null = null;
 let bangGiaCacheAt = 0;
@@ -34,19 +53,9 @@ async function getBangGiaMap(): Promise<Map<string, BangGiaRow>> {
   const now = Date.now();
   if (bangGiaCache && now - bangGiaCacheAt < CACHE_TTL_MS) return bangGiaCache;
 
-  const maps = await Promise.allSettled(
-    EXCHANGES.map((ex) =>
-      fetchWithTimeout(BANGGIA_URL.replace("{exchange}", ex), {
-        headers: { "User-Agent": UA, Referer: "https://cafef.vn/" },
-        cache: "no-store",
-        timeoutMs: 7000,
-      }).then((r) => (r.ok ? r.json() as Promise<BangGiaRow[]> : []))
-    )
-  );
-
+  const maps = await Promise.all(EXCHANGES.map((ex) => fetchBangGiaRows(ex)));
   const merged = new Map<string, BangGiaRow>();
-  for (const result of maps) {
-    const rows: BangGiaRow[] = result.status === "fulfilled" ? result.value : [];
+  for (const rows of maps) {
     for (const row of rows) {
       if (row.a) merged.set(row.a.toUpperCase(), row);
     }
@@ -155,5 +164,86 @@ export async function getIndexChart(symbol: string): Promise<IndexChart> {
   } catch {
     return { t: [], c: [] };
   }
+}
+
+/* ------------------------------------------------------------------ *
+ * Daily market snapshot (foreign flows · liquidity total · breadth),
+ * all derived from the realtime banggia feed for one exchange.
+ * ------------------------------------------------------------------ */
+
+export type ForeignFlow = { symbol: string; value: number }; // net value in tỷ đồng
+export type MarketStats = {
+  exchange: string;
+  asOf: string | null;
+  gtgd: number; // total matched turnover (tỷ đồng)
+  breadth: { advance: number; decline: number; unchanged: number; notTraded: number };
+  foreign: {
+    buyTop20: number; // Σ foreign buy value of the 20 biggest buyers (tỷ)
+    sellTop20: number;
+    diff: number; // buyTop20 − sellTop20
+    netBuy: ForeignFlow[]; // top 5 net foreign buy (positive)
+    netSell: ForeignFlow[]; // top 5 net foreign sell (negative)
+  };
+};
+
+const round2 = (n: number) => Math.round(n * 100) / 100;
+
+export async function getMarketStats(exchange = "HOSE"): Promise<MarketStats> {
+  const rows = await fetchBangGiaRows(exchange);
+
+  let advance = 0,
+    decline = 0,
+    unchanged = 0,
+    notTraded = 0,
+    gtgd = 0;
+  let asOf: string | null = null;
+  const flows: { symbol: string; net: number; buy: number; sell: number }[] = [];
+
+  for (const r of rows) {
+    if (!r.a) continue;
+    if (r.Time) asOf = r.Time;
+    const price = r.l || r.e || r.w || 0; // nghìn đồng
+    const vol = r.totalvolume ?? r.n ?? 0;
+    const k = r.k ?? 0;
+
+    if (vol <= 0 || price <= 0) notTraded++;
+    else if (k > 0) advance++;
+    else if (k < 0) decline++;
+    else unchanged++;
+
+    if (vol > 0 && price > 0) gtgd += vol * price * 1000; // → VND
+
+    const fb = r.x ?? 0;
+    const fs = r.y ?? 0;
+    const unit = (price * 1000) / 1e9; // shares → tỷ đồng
+    flows.push({ symbol: r.a, net: (fb - fs) * unit, buy: fb * unit, sell: fs * unit });
+  }
+
+  const netBuy = [...flows]
+    .sort((a, b) => b.net - a.net)
+    .filter((x) => x.net > 0)
+    .slice(0, 5)
+    .map((x) => ({ symbol: x.symbol, value: round2(x.net) }));
+  const netSell = [...flows]
+    .sort((a, b) => a.net - b.net)
+    .filter((x) => x.net < 0)
+    .slice(0, 5)
+    .map((x) => ({ symbol: x.symbol, value: round2(x.net) }));
+  const buyTop20 = [...flows].sort((a, b) => b.buy - a.buy).slice(0, 20).reduce((s, x) => s + x.buy, 0);
+  const sellTop20 = [...flows].sort((a, b) => b.sell - a.sell).slice(0, 20).reduce((s, x) => s + x.sell, 0);
+
+  return {
+    exchange,
+    asOf,
+    gtgd: round2(gtgd / 1e9),
+    breadth: { advance, decline, unchanged, notTraded },
+    foreign: {
+      buyTop20: round2(buyTop20),
+      sellTop20: round2(sellTop20),
+      diff: round2(buyTop20 - sellTop20),
+      netBuy,
+      netSell,
+    },
+  };
 }
 

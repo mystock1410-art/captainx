@@ -220,3 +220,38 @@ export async function getStockIntraday(symbols: string[], signal?: AbortSignal):
     candles: await getOneIntraday(sym, signal),
   }));
 }
+
+/* ------------------------------------------------------------------ *
+ * Index intraday volume series (for the market liquidity curve).
+ * DNSE /ohlcs/index returns per-bar market matched volume (v).
+ * ------------------------------------------------------------------ */
+
+async function fetchIndexOhlc(
+  symbol: string,
+  resolution: string,
+  fromOffsetSec: number,
+  signal?: AbortSignal,
+): Promise<Ohlc | null> {
+  const now = Math.floor(Date.now() / 1000);
+  const from = now - fromOffsetSec;
+  const url = `${BASE}/chart-api/v2/ohlcs/index?from=${from}&to=${now}&symbol=${encodeURIComponent(symbol)}&resolution=${resolution}`;
+  try {
+    const r = await fetchWithTimeout(url, { headers: HEADERS, signal, cache: "no-store", timeoutMs: 7000 });
+    if (!r.ok) return null;
+    return (await r.json()) as Ohlc;
+  } catch {
+    return null;
+  }
+}
+
+/** Per-bar matched volume for the latest session of an index (e.g. VNINDEX). */
+export async function getIndexVolumeSeries(
+  symbol: string,
+  signal?: AbortSignal,
+): Promise<{ t: number[]; v: number[] }> {
+  let o = await fetchIndexOhlc(symbol, "5", 10 * 3600, signal);
+  if (!o || !o.t?.length) o = await fetchIndexOhlc(symbol, "5", 5 * 24 * 3600, signal);
+  if (!o || !o.t?.length) return { t: [], v: [] };
+  const s = latestSessionStart(o.t);
+  return { t: o.t.slice(s), v: (o.v ?? []).slice(s) };
+}
