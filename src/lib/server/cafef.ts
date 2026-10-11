@@ -21,10 +21,25 @@ export type Quote = {
 
 type BangGiaRow = {
   a: string;            // symbol
-  e: number;            // current price (nghìn đồng)
-  w: number;            // session low / reference-ish
+  b?: number;           // reference / TC (tham chiếu)
+  c?: number;           // ceiling (trần)
+  d?: number;           // floor (sàn)
+  e: number;            // bid price 1 (best bid)
+  f?: number;           // bid volume 1
+  g?: number;           // bid price 2
+  h?: number;           // bid volume 2
+  i?: number;           // bid price 3
+  j?: number;           // bid volume 3
   k: number;            // change amount
   l?: number;           // last matched price (nghìn đồng)
+  m?: number;           // last matched volume
+  o?: number;           // ask price 3 (worst)
+  p?: number;           // ask volume 3
+  q?: number;           // ask price 2
+  r?: number;           // ask volume 2
+  s?: number;           // ask price 1 (best ask)
+  t?: number;           // ask volume 1
+  w: number;            // session low / reference-ish
   x?: number;           // foreign BUY volume (shares)
   y?: number;           // foreign SELL volume (shares)
   n?: number;           // total matched volume
@@ -187,6 +202,47 @@ export type MarketStats = {
 };
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
+
+/* ------------------------------------------------------------------ *
+ * Order-book depth (3 bid + 3 ask) from the banggia feed. Field map
+ * verified across liquid tickers: bids (best→worst) = (e,f)(g,h)(i,j);
+ * asks (best→worst) = (s,t)(q,r)(o,p).
+ * ------------------------------------------------------------------ */
+
+export type DepthLevel = { price: number; vol: number };
+export type SymbolDepth = {
+  symbol: string;
+  ref: number | null;
+  ceiling: number | null;
+  floor: number | null;
+  last: number | null;
+  bids: DepthLevel[];
+  asks: DepthLevel[];
+};
+
+export async function getDepth(symbols: string[]): Promise<SymbolDepth[]> {
+  const map = await getBangGiaMap();
+  const lvl = (p?: number, v?: number): DepthLevel | null =>
+    p && p > 0 ? { price: p, vol: v ?? 0 } : null;
+  return symbols.map((sym) => {
+    const u = sym.toUpperCase();
+    const r = map.get(u);
+    if (!r) {
+      return { symbol: u, ref: null, ceiling: null, floor: null, last: null, bids: [], asks: [] };
+    }
+    const bids = [lvl(r.e, r.f), lvl(r.g, r.h), lvl(r.i, r.j)].filter(Boolean) as DepthLevel[];
+    const asks = [lvl(r.s, r.t), lvl(r.q, r.r), lvl(r.o, r.p)].filter(Boolean) as DepthLevel[];
+    return {
+      symbol: u,
+      ref: r.b ?? null,
+      ceiling: r.c ?? null,
+      floor: r.d ?? null,
+      last: r.l ?? r.e ?? null,
+      bids,
+      asks,
+    };
+  });
+}
 
 export async function getMarketStats(exchange = "HOSE"): Promise<MarketStats> {
   const rows = await fetchBangGiaRows(exchange);

@@ -41,7 +41,7 @@ export function DerivativesGrid() {
   const items = data ?? [];
 
   return (
-    <section className="space-y-2">
+    <section className="space-y-1.5">
       <div className="flex items-center justify-between gap-2 border-l-2 border-gold pl-2.5">
         <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
           Phái Sinh · VN30 Futures
@@ -49,7 +49,7 @@ export function DerivativesGrid() {
         <CollapseButton collapsed={collapsed} onClick={toggle} label="Phái Sinh" />
       </div>
       {!collapsed && (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {items.length === 0 ? (
             <>
               <CardSkeleton symbol="VN30F1M" />
@@ -68,8 +68,8 @@ export function DerivativesGrid() {
 function CardSkeleton({ symbol }: { symbol: string }) {
   const label = LABELS[symbol] ?? symbol;
   return (
-    <div className="card-elevated rounded-sm p-3">
-      <div className="mb-1.5 flex items-center gap-2">
+    <div className="card-elevated rounded-sm p-2.5">
+      <div className="mb-1 flex items-center gap-2">
         <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
         <span className="inline-flex h-[18px] shrink-0 items-center justify-center rounded-sm bg-gold/15 px-1 text-[9px] font-bold uppercase tracking-wider text-gold">
           F
@@ -175,8 +175,8 @@ function DerivativeCard({ quote }: { quote: DerivativeQuote }) {
   }, [quote.t, quote.c]);
 
   return (
-    <div className="card-elevated rounded-sm p-3">
-      <div className="mb-1.5 flex items-center gap-2">
+    <div className="card-elevated rounded-sm p-2.5">
+      <div className="mb-1 flex items-center gap-2">
         <span
           className={cn(
             "h-1.5 w-1.5 shrink-0 rounded-full",
@@ -195,7 +195,7 @@ function DerivativeCard({ quote }: { quote: DerivativeQuote }) {
         </span>
       </div>
 
-      <div className="mb-1.5 flex items-baseline gap-2 whitespace-nowrap">
+      <div className="mb-1 flex items-baseline gap-2 whitespace-nowrap">
         {hasData ? (
           <>
             <span className={cn("font-mono text-base font-bold tabular-nums", toneTxt)}>

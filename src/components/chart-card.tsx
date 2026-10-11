@@ -148,7 +148,7 @@ export function ChartCard({
   }, [t, c]);
 
   return (
-    <div className="card-elevated rounded-sm p-3">
+    <div className="card-elevated rounded-sm p-2.5">
       <div className="mb-1 flex items-start justify-between gap-2">
         <div className="flex items-center gap-1.5 min-w-0">
           <span

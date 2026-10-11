@@ -5,9 +5,10 @@ import { Settings2 } from "lucide-react";
 import { useWatchlist } from "@/hooks/use-watchlist";
 import { usePolling } from "@/hooks/use-polling";
 import { isVnFuturesMarketOpen } from "@/lib/market-hours";
-import { api, type IntradayCandle, type IntradaySeries, type Quote } from "@/lib/api";
+import { api, type IntradayCandle, type IntradaySeries, type Quote, type SymbolDepth } from "@/lib/api";
 import { formatChange, formatPct, formatPrice, cn } from "@/lib/utils";
 import { MiniCandles } from "./mini-candles";
+import { DepthPopup } from "./depth-popup";
 import { WatchlistModal } from "./watchlist-modal";
 
 // VN price-board convention:
@@ -77,6 +78,21 @@ export function TickerBar() {
     return m;
   }, [candleData]);
 
+  // Order-book depth (3 bid + 3 ask), preloaded so the click-to-peek popup is
+  // instant. Refreshes ~15s during the session (banggia is CDN-cached anyway).
+  const { data: depthData } = usePolling<SymbolDepth[]>(
+    (signal) => (symbols.length ? api.depth(symbols, signal) : Promise.resolve([] as SymbolDepth[])),
+    marketOpen ? 15_000 : 60_000,
+    [key, hydrated, marketOpen],
+  );
+  const depthMap = useMemo(() => {
+    const m = new Map<string, SymbolDepth>();
+    for (const d of depthData ?? []) m.set(d.symbol, d);
+    return m;
+  }, [depthData]);
+
+  const [popup, setPopup] = useState<{ depth: SymbolDepth; rect: DOMRect } | null>(null);
+
   const quotes = data ?? [];
 
   return (
@@ -89,7 +105,15 @@ export function TickerBar() {
         </div>
         <div className="order-2 grid min-w-0 flex-1 grid-cols-1 gap-1.5 sm:grid-cols-2 md:[grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] lg:order-none">
           {hydrated && quotes.map((q) => (
-            <TickerChip key={q.symbol} quote={q} candles={candleMap.get(q.symbol) ?? []} />
+            <TickerChip
+              key={q.symbol}
+              quote={q}
+              candles={candleMap.get(q.symbol) ?? []}
+              onOpen={(rect) => {
+                const d = depthMap.get(q.symbol);
+                if (d) setPopup({ depth: d, rect });
+              }}
+            />
           ))}
           {(!hydrated || (loading && quotes.length === 0)) && (
             <div className="col-span-full text-xs text-muted-foreground">Đang tải watchlist…</div>
@@ -116,18 +140,42 @@ export function TickerBar() {
         onRemove={remove}
         onReset={reset}
       />
+
+      {popup && (
+        <DepthPopup depth={popup.depth} rect={popup.rect} onClose={() => setPopup(null)} />
+      )}
     </div>
   );
 }
 
-function TickerChip({ quote, candles }: { quote: Quote; candles: IntradayCandle[] }) {
+function TickerChip({
+  quote,
+  candles,
+  onOpen,
+}: {
+  quote: Quote;
+  candles: IntradayCandle[];
+  onOpen: (rect: DOMRect) => void;
+}) {
   const hasData = quote.price !== null && quote.changePct !== null;
   const tone = toneOf(quote);
   const [stage, setStage] = useState<"local" | "cdn" | "fallback">("local");
   const ringCls = hasData ? TONE_RING[tone] : "ring-border";
   const toneTxt = hasData ? TONE_TEXT[tone] : "text-muted-foreground";
   return (
-    <div className="chip-elevated inline-flex w-full items-center gap-2 overflow-hidden rounded-sm px-2.5 py-1.5">
+    <div
+      className="chip-elevated inline-flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-sm px-2.5 py-1.5"
+      role="button"
+      tabIndex={0}
+      title={`Xem bước giá ${quote.symbol}`}
+      onClick={(e) => onOpen(e.currentTarget.getBoundingClientRect())}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen(e.currentTarget.getBoundingClientRect());
+        }
+      }}
+    >
       {stage !== "fallback" ? (
         <span
           className={cn(

@@ -19,7 +19,7 @@ const SLOTS = [
 export function ChartsGrid() {
   const { collapsed, toggle } = useCollapsed("x-index");
   return (
-    <section className="space-y-2">
+    <section className="space-y-1.5">
       <div className="flex items-center justify-between gap-2 border-l-2 border-gold pl-2.5">
         <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
           X Index

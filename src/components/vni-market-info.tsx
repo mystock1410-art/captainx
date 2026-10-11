@@ -29,13 +29,13 @@ export function VniMarketInfo() {
   const { collapsed, toggle } = useCollapsed("vni-market");
 
   return (
-    <section className="space-y-2">
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-l-2 border-gold pl-2.5">
-        <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
+    <section className="space-y-1.5">
+      <div className="flex items-center justify-between gap-2 border-l-2 border-gold pl-2.5">
+        <h3 className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
           VNI Daily Market Info
         </h3>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="hidden truncate font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:inline">
             HOSE · Tỷ đồng{data?.asOf ? ` · ${data.asOf}` : ""}
           </span>
           <CollapseButton collapsed={collapsed} onClick={toggle} label="VNI Daily Market Info" />
@@ -43,7 +43,7 @@ export function VniMarketInfo() {
       </div>
 
       {!collapsed && (
-      <div className="card-elevated space-y-4 rounded-sm p-3 sm:p-4">
+      <div className="card-elevated space-y-3 rounded-sm p-2.5 sm:p-3">
         {error && !data ? (
           <p className="py-6 text-center text-sm text-down">Lỗi tải dữ liệu: {error}</p>
         ) : !data ? (
@@ -74,7 +74,7 @@ function ForeignBlock({ data }: { data: MarketAnalyze }) {
 
   return (
     <div>
-      <h4 className="mb-2 text-[11px] font-bold uppercase tracking-[0.12em] text-gold">
+      <h4 className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-gold">
         Top 5 giao dịch khối ngoại
       </h4>
 
@@ -84,7 +84,7 @@ function ForeignBlock({ data }: { data: MarketAnalyze }) {
         <Tile label="Chênh lệch" value={fmtTy(diff, true)} tone={diff >= 0 ? "up" : "down"} />
       </div>
 
-      <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+      <div className="mt-2 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
         <div>
           <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-up">
             Mua ròng
@@ -202,8 +202,8 @@ function LiquidityBlock({ data }: { data: MarketAnalyze }) {
   }, [pts, niceMax]);
 
   return (
-    <div className="border-t border-border pt-3">
-      <h4 className="mb-2 text-[11px] font-bold uppercase tracking-[0.12em] text-gold">
+    <div className="border-t border-border pt-2.5">
+      <h4 className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-gold">
         Thanh khoản thị trường
       </h4>
 
@@ -225,13 +225,13 @@ function LiquidityBlock({ data }: { data: MarketAnalyze }) {
         </div>
       </div>
 
-      <div className="mt-3 flex gap-2 pb-5">
+      <div className="mt-2 flex gap-2 pb-4">
         <div className="flex w-12 shrink-0 flex-col justify-between py-0.5 text-right font-mono text-[9px] text-muted-foreground">
           <span>{fmtTy(niceMax)}</span>
           <span>{fmtTy(niceMax / 2)}</span>
           <span>0</span>
         </div>
-        <div className="relative h-28 min-w-0 flex-1">
+        <div className="relative h-24 min-w-0 flex-1">
           {pts.length ? (
             <>
               <svg
@@ -302,7 +302,7 @@ function BreadthBlock({ data }: { data: MarketAnalyze }) {
   const pct = (n: number) => `${(n / total) * 100}%`;
 
   return (
-    <div className="border-t border-border pt-3">
+    <div className="border-t border-border pt-2.5">
       <div className="mb-1.5 flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground">
         <span>CP · Chưa GD {notTraded}</span>
         {data.asOf && <span className="font-mono normal-case">{data.asOf}</span>}

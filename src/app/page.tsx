@@ -12,7 +12,7 @@ const EN_HEADLINE_SOURCES = [] as const;
 
 export default function Page() {
   return (
-    <main className="mx-auto w-full max-w-[1600px] flex-1 space-y-6 px-4 py-4">
+    <main className="mx-auto w-full max-w-[1600px] flex-1 space-y-3 px-4 py-3">
       <DerivativesGrid />
 
       <VniMarketInfo />
@@ -23,7 +23,7 @@ export default function Page() {
 
       <MarketBriefPanel />
 
-      <div className="grid grid-cols-1 gap-x-4 gap-y-6 lg:grid-cols-2 lg:gap-y-0 lg:grid-rows-[auto_auto_1fr]">
+      <div className="grid grid-cols-1 gap-x-4 gap-y-4 lg:grid-cols-2 lg:gap-y-0 lg:grid-rows-[auto_auto_1fr]">
         <NewsPanel
           title="Thông tin trong nước"
           liveSources={VN_LIVE_SOURCES}

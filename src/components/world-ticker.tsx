@@ -51,16 +51,16 @@ export function WorldTicker() {
   for (const q of quotes) grouped[q.category]?.push(q);
 
   return (
-    <div className="card-elevated divide-y divide-border rounded-sm">
-      <div className="flex items-center justify-between px-3 py-1.5">
-        <div className="flex items-center border-l-2 border-gold pl-2.5">
-          <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
-            Global Markets
-          </h3>
-        </div>
+    <section className="space-y-1.5">
+      <div className="flex items-center justify-between gap-2 border-l-2 border-gold pl-2.5">
+        <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
+          Global Markets
+        </h3>
         <CollapseButton collapsed={collapsed} onClick={toggle} label="Global Markets" />
       </div>
-      {!collapsed && CATEGORIES.map(({ key, label }) => {
+      {!collapsed && (
+        <div className="card-elevated divide-y divide-border rounded-sm">
+          {CATEGORIES.map(({ key, label }) => {
         const items = grouped[key];
         if (!items || items.length === 0) return null;
         return (
@@ -78,8 +78,10 @@ export function WorldTicker() {
             </div>
           </div>
         );
-      })}
-    </div>
+          })}
+        </div>
+      )}
+    </section>
   );
 }
 

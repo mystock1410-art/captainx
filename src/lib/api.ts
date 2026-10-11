@@ -47,6 +47,17 @@ export type ChartPayload = {
 export type IntradayCandle = { o: number; h: number; l: number; c: number };
 export type IntradaySeries = { symbol: string; candles: IntradayCandle[] };
 
+export type DepthLevel = { price: number; vol: number };
+export type SymbolDepth = {
+  symbol: string;
+  ref: number | null;
+  ceiling: number | null;
+  floor: number | null;
+  last: number | null;
+  bids: DepthLevel[];
+  asks: DepthLevel[];
+};
+
 export type ForeignFlow = { symbol: string; value: number };
 export type MarketAnalyze = {
   exchange: string;
@@ -90,6 +101,8 @@ export const api = {
     getJson<ChartPayload>(`/api/chart/${slot}`, signal),
   intraday: (symbols: string[], signal?: AbortSignal) =>
     getJson<IntradaySeries[]>(`/api/intraday?symbols=${encodeURIComponent(symbols.join(","))}`, signal),
+  depth: (symbols: string[], signal?: AbortSignal) =>
+    getJson<SymbolDepth[]>(`/api/depth?symbols=${encodeURIComponent(symbols.join(","))}`, signal),
   marketAnalyze: (signal?: AbortSignal) =>
     getJson<MarketAnalyze>(`/api/market-analyze`, signal),
   news: (signal?: AbortSignal) => getJson<NewsItem[]>(`/api/news`, signal),
