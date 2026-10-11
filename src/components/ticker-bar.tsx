@@ -81,13 +81,13 @@ export function TickerBar() {
 
   return (
     <div className="border-b border-border bg-background">
-      <div className="mx-auto flex max-w-[1600px] items-start gap-3 px-4 py-2.5">
+      <div className="mx-auto flex max-w-[1600px] flex-col items-stretch gap-2 px-4 py-2.5 lg:flex-row lg:items-start lg:gap-3">
         <div className="mt-0.5 hidden shrink-0 self-stretch border-l-2 border-gold pl-2.5 lg:flex lg:items-center">
           <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
             Watchlist
           </h3>
         </div>
-        <div className="grid min-w-0 flex-1 grid-cols-1 gap-1.5 sm:grid-cols-2 md:[grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+        <div className="order-2 grid min-w-0 flex-1 grid-cols-1 gap-1.5 sm:grid-cols-2 md:[grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] lg:order-none">
           {hydrated && quotes.map((q) => (
             <TickerChip key={q.symbol} quote={q} candles={candleMap.get(q.symbol) ?? []} />
           ))}
@@ -100,7 +100,7 @@ export function TickerBar() {
         </div>
         <button
           onClick={() => setOpen(true)}
-          className="cta-border inline-flex shrink-0 items-center gap-1.5 rounded-sm border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider"
+          className="cta-border order-1 inline-flex shrink-0 items-center gap-1.5 self-end rounded-sm border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider lg:order-none lg:self-auto"
         >
           <span className="cta-dot inline-block h-1.5 w-1.5 rounded-full bg-gold" />
           <Settings2 className="cta-blink h-3 w-3" />
