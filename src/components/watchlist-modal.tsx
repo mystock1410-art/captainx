@@ -94,7 +94,7 @@ export function WatchlistModal({
             </button>
           </div>
           {full && (
-            <p role="alert" className="text-[11px] text-gold">
+            <p role="alert" className="text-[12px] text-gold">
               Đã đạt tối đa {WATCHLIST_MAX} mã. Xóa bớt để thêm mã mới.
             </p>
           )}

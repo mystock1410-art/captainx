@@ -22,7 +22,7 @@ export function CollapseButton({
       aria-label={label ? `${text} ${label}` : text}
       title={text}
       className={cn(
-        "cta-border cta-blink inline-flex shrink-0 items-center gap-1 rounded-sm border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-gold",
+        "cta-border cta-blink inline-flex shrink-0 items-center gap-1 rounded-sm border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold",
         className,
       )}
     >

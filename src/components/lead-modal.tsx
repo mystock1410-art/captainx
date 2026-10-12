@@ -147,7 +147,7 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
               Truy cập Phân tích AI
             </h3>
           </div>
-          <p className="text-[13px] leading-relaxed text-foreground/85">
+          <p className="text-[14px] leading-relaxed text-foreground/85">
             <span className="font-semibold text-brand">AI Captain X</span> sẽ tập hợp các thông tin trên trang bao gồm tất cả thông tin{" "}
             <span className="font-semibold">Vĩ mô</span>,{" "}
             <span className="font-semibold">Doanh nghiệp</span>, các Data đã được thu thập từ ngày đầu tạo trang để đưa ra nhận định chung về{" "}
@@ -295,7 +295,7 @@ function OcbsAccountPopup({ onClose }: { onClose: () => void }) {
             href="https://taikhoan.ocbs.com.vn/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-brand px-3 py-2 text-[13px] font-semibold text-background hover:bg-brand/90"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-brand px-3 py-2 text-[14px] font-semibold text-background hover:bg-brand/90"
           >
             <ExternalLink className="h-3.5 w-3.5" />
             Mở tài khoản tại taikhoan.ocbs.com.vn
@@ -303,10 +303,10 @@ function OcbsAccountPopup({ onClose }: { onClose: () => void }) {
 
           {hasContact && (
             <div className="space-y-2 rounded-sm border border-border bg-background/50 p-3">
-              <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+              <p className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">
                 Hoặc liên hệ trực tiếp
               </p>
-              <p className="text-[13px] font-semibold text-foreground">
+              <p className="text-[14px] font-semibold text-foreground">
                 Mr X — Chuyên gia Quản lý Tài sản hàng đầu
               </p>
               {OCBS_ZALO && (
@@ -373,7 +373,7 @@ function Field({
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="w-full rounded-sm border border-border bg-background px-2.5 py-1.5 text-[13px] text-foreground placeholder:text-muted-foreground/60 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+        className="w-full rounded-sm border border-border bg-background px-2.5 py-1.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
       />
     </label>
   );
@@ -389,7 +389,7 @@ function SamplePreview() {
         <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
           Ví dụ nội dung phân tích
         </span>
-        <span className="ml-auto rounded bg-muted px-1.5 py-0.5 text-[9px] font-mono text-muted-foreground">
+        <span className="ml-auto rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
           MẪU · KHÔNG REALTIME
         </span>
       </div>
@@ -471,7 +471,7 @@ function SampleSectionCard({
         <span className="text-brand">{icon}</span>
         <h5 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">{title}</h5>
       </div>
-      <div className={`mb-1.5 inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-[11px] font-semibold ${toneCls}`}>
+      <div className={`mb-1.5 inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-[12px] font-semibold ${toneCls}`}>
         <Minus className="h-3 w-3" />
         {sentiment}
         <span className="ml-1 font-mono text-[10px] opacity-70">{confidence}%</span>
@@ -495,7 +495,7 @@ function SampleCatalyst({ dir, region, label, detail }: { dir: "+" | "-" | "~"; 
       <span>
         <span className="font-semibold">{label}</span>{" "}
         <span className="text-muted-foreground">{detail}</span>
-        <span className={`ml-1.5 rounded px-1 py-px text-[9px] font-bold uppercase tracking-wider ${regionCls}`}>
+        <span className={`ml-1.5 rounded px-1 py-px text-[10px] font-bold uppercase tracking-wider ${regionCls}`}>
           {region}
         </span>
       </span>
@@ -509,7 +509,7 @@ function SampleSymbolNote({ symbol, tone, note }: { symbol: string; tone: Tone; 
     : tone === "bearish" ? "border-down/40 bg-down/5 text-down"
     : "border-border bg-muted text-muted-foreground";
   return (
-    <li className={`rounded-md border px-2 py-1 text-[11px] ${cls}`}>
+    <li className={`rounded-md border px-2 py-1 text-[12px] ${cls}`}>
       <span className="font-mono font-bold">{symbol}</span>
       <span className="ml-1.5 text-foreground/80">{note}</span>
     </li>

@@ -42,10 +42,19 @@ export function usePolling<T>(
       if (!cancelled && !document.hidden) tick();
     }
 
+    // Manual full-page refresh: the floating refresh button dispatches this
+    // event, and every mounted poller re-fetches immediately.
+    function onRefresh() {
+      if (!cancelled && (typeof document === "undefined" || !document.hidden)) tick();
+    }
+
     tick();
     schedule();
     if (typeof document !== "undefined") {
       document.addEventListener("visibilitychange", onVisible);
+    }
+    if (typeof window !== "undefined") {
+      window.addEventListener("captainx:refresh", onRefresh);
     }
 
     return () => {
@@ -54,6 +63,9 @@ export function usePolling<T>(
       if (timer) clearTimeout(timer);
       if (typeof document !== "undefined") {
         document.removeEventListener("visibilitychange", onVisible);
+      }
+      if (typeof window !== "undefined") {
+        window.removeEventListener("captainx:refresh", onRefresh);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

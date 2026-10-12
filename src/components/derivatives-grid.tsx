@@ -43,7 +43,7 @@ export function DerivativesGrid() {
   return (
     <section className="space-y-1.5">
       <div className="flex items-center justify-between gap-2 border-l-2 border-gold pl-2.5">
-        <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
+        <h3 className="text-[16px] font-bold uppercase tracking-[0.18em] text-brand">
           Phái Sinh · VN30 Futures
         </h3>
         <CollapseButton collapsed={collapsed} onClick={toggle} label="Phái Sinh" />
@@ -71,17 +71,17 @@ function CardSkeleton({ symbol }: { symbol: string }) {
     <div className="card-elevated rounded-sm p-2.5">
       <div className="mb-1 flex items-center gap-2">
         <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
-        <span className="inline-flex h-[18px] shrink-0 items-center justify-center rounded-sm bg-gold/15 px-1 text-[9px] font-bold uppercase tracking-wider text-gold">
+        <span className="inline-flex h-[18px] shrink-0 items-center justify-center rounded-sm bg-gold/15 px-1 text-[10px] font-bold uppercase tracking-wider text-gold">
           F
         </span>
-        <span className="font-mono text-[15px] font-bold tracking-[0.04em] text-foreground">
+        <span className="font-mono text-[16px] font-bold tracking-[0.04em] text-foreground">
           {symbol}
         </span>
         <span className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">
           {label}
         </span>
       </div>
-      <div className="mb-1.5 text-[11px] text-muted-foreground">Đang tải…</div>
+      <div className="mb-1.5 text-[12px] text-muted-foreground">Đang tải…</div>
       <div className="h-[80px] w-full" />
     </div>
   );
@@ -184,10 +184,10 @@ function DerivativeCard({ quote }: { quote: DerivativeQuote }) {
           )}
           title={isOpen ? "Đang giao dịch" : "Đóng cửa"}
         />
-        <span className="inline-flex h-[18px] shrink-0 items-center justify-center rounded-sm bg-gold/15 px-1 text-[9px] font-bold uppercase tracking-wider text-gold">
+        <span className="inline-flex h-[18px] shrink-0 items-center justify-center rounded-sm bg-gold/15 px-1 text-[10px] font-bold uppercase tracking-wider text-gold">
           F
         </span>
-        <span className="font-mono text-[15px] font-bold tracking-[0.04em] text-foreground">
+        <span className="font-mono text-[16px] font-bold tracking-[0.04em] text-foreground">
           {quote.symbol}
         </span>
         <span className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -202,11 +202,11 @@ function DerivativeCard({ quote }: { quote: DerivativeQuote }) {
               {formatPrice(quote.price!)}
             </span>
             {quote.change != null && (
-              <span className={cn("font-mono text-[11px] tabular-nums", toneTxt)}>
+              <span className={cn("font-mono text-[12px] tabular-nums", toneTxt)}>
                 {formatChange(quote.change)}
               </span>
             )}
-            <span className={cn("font-mono text-[11px] font-semibold tabular-nums", toneTxt)}>
+            <span className={cn("font-mono text-[12px] font-semibold tabular-nums", toneTxt)}>
               {formatPct(quote.changePct!)}
             </span>
             {quote.prev != null && (
@@ -216,7 +216,7 @@ function DerivativeCard({ quote }: { quote: DerivativeQuote }) {
             )}
           </>
         ) : (
-          <span className="text-[11px] text-muted-foreground">Đang tải…</span>
+          <span className="text-[12px] text-muted-foreground">Đang tải…</span>
         )}
       </div>
 

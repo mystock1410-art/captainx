@@ -16,14 +16,14 @@ import { formatChangeInt, formatPct, formatPrice, formatPriceInt, cn } from "@/l
 function SlotLogo({ slot }: { slot: string }) {
   if (slot === "vnindex") {
     return (
-      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-down text-[8px] font-bold text-white ring-1 ring-white/10">
+      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-down text-[10px] font-bold text-white ring-1 ring-white/10">
         VN
       </span>
     );
   }
   if (slot === "dji" || slot === "ym") {
     return (
-      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[8px] font-bold text-white ring-1 ring-white/10">
+      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white ring-1 ring-white/10">
         DJ
       </span>
     );
@@ -159,11 +159,11 @@ export function ChartCard({
             title={open ? "Đang giao dịch" : "Đóng cửa"}
           />
           <SlotLogo slot={slot} />
-          <span className="text-[15px] font-bold uppercase tracking-[0.03em] text-brand leading-none whitespace-nowrap truncate xl:text-[18px] xl:tracking-[0.05em] 2xl:text-[22px]">
+          <span className="text-[16px] font-bold uppercase tracking-[0.03em] text-brand leading-none whitespace-nowrap truncate xl:text-[18px] xl:tracking-[0.05em] 2xl:text-[18px]">
             {label}
           </span>
         </div>
-        <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground whitespace-nowrap shrink-0">{symbol}</span>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground whitespace-nowrap shrink-0">{symbol}</span>
       </div>
       <div className="mb-1.5">
         <div className="truncate text-[10px] uppercase tracking-wider text-muted-foreground leading-tight" title={name}>{name}</div>
@@ -174,7 +174,7 @@ export function ChartCard({
                 {unit ? formatPriceInt(price) : formatPrice(price)}
               </span>
               {unit && (
-                <span className="font-mono text-[9px] font-medium text-muted-foreground">
+                <span className="font-mono text-[10px] font-medium text-muted-foreground">
                   {unit}
                 </span>
               )}

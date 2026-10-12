@@ -28,7 +28,7 @@ export function NavTabs() {
               key={tab.href}
               href={tab.href}
               className={cn(
-                "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md border px-2.5 py-1.5 text-[12px] font-semibold sm:px-3 sm:text-[13px]",
+                "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md border px-2.5 py-1.5 text-[12px] font-semibold sm:px-3 sm:text-[14px]",
                 isBrand ? "cta-border-brand" : "cta-border",
               )}
             >
@@ -47,7 +47,7 @@ export function NavTabs() {
             key={tab.href}
             href={tab.href}
             className={cn(
-              "shrink-0 whitespace-nowrap rounded-md px-2.5 py-1.5 text-[12px] font-medium transition-colors sm:px-3 sm:text-[13px]",
+              "shrink-0 whitespace-nowrap rounded-md px-2.5 py-1.5 text-[12px] font-medium transition-colors sm:px-3 sm:text-[14px]",
               active
                 ? "bg-accent text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_1px_3px_rgba(0,0,0,0.5)]"
                 : "text-muted-foreground hover:text-foreground hover:bg-accent/40",

@@ -129,7 +129,7 @@ export function MarketBriefPanel() {
         aria-expanded={open}
       >
         <Sparkles className="h-3.5 w-3.5 text-gold" />
-        <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
+        <h3 className="text-[16px] font-bold uppercase tracking-[0.18em] text-brand">
           Phân tích AI · Thị trường VN & Quốc tế
         </h3>
         {data && (
@@ -139,7 +139,7 @@ export function MarketBriefPanel() {
           </>
         )}
         {data?.model && (
-          <span className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-mono text-muted-foreground">
+          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
             {data.model}
           </span>
         )}
@@ -154,7 +154,7 @@ export function MarketBriefPanel() {
         ) : (
           <span className="ml-auto inline-flex items-center gap-1.5">
             <span className="cta-dot inline-block h-1.5 w-1.5 rounded-full bg-gold" />
-            <span className="cta-blink text-[11px] font-bold uppercase tracking-[0.12em]">
+            <span className="cta-blink text-[12px] font-bold uppercase tracking-[0.12em]">
               Click để phân tích
             </span>
           </span>
@@ -237,7 +237,7 @@ export function MarketBriefPanel() {
                           <span className="text-muted-foreground">{c.detail}</span>
                           {c.region && (
                             <span className={cn(
-                              "ml-1.5 rounded px-1 py-px text-[9px] font-bold uppercase tracking-wider",
+                              "ml-1.5 rounded px-1 py-px text-[10px] font-bold uppercase tracking-wider",
                               c.region === "global" ? "bg-blue-500/15 text-blue-600 dark:text-blue-400" : "bg-foreground/10 text-foreground/60"
                             )}>
                               {c.region === "global" ? "QT" : "VN"}
@@ -318,7 +318,7 @@ function SectionCard({ icon, title, section }: { icon: React.ReactNode; title: s
     <div className="rounded-sm border border-border bg-background p-3">
       <div className="mb-2 flex items-center gap-2">
         <span className="text-brand">{icon}</span>
-        <h4 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">{title}</h4>
+        <h4 className="text-[16px] font-bold uppercase tracking-[0.18em] text-brand">{title}</h4>
       </div>
       <div className={cn("mb-2 inline-flex items-center gap-1.5 rounded border px-2 py-1 text-xs font-semibold", sentClasses(section.sentiment))}>
         <Icon className="h-3.5 w-3.5" />

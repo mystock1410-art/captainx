@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { RefreshButton } from "@/components/refresh-button";
 import { Header } from "@/components/header";
 import { TickerBar } from "@/components/ticker-bar";
 import "./globals.css";
@@ -79,10 +80,11 @@ export default function RootLayout({
           <TickerBar />
           {children}
           <footer className="bar-elevated-footer">
-            <div className="mx-auto flex max-w-[1600px] items-center justify-center px-3 py-3 text-center text-[9px] uppercase tracking-[0.12em] sm:px-4 sm:py-4 sm:text-[10px] sm:tracking-[0.15em]">
+            <div className="mx-auto flex max-w-[1600px] items-center justify-center px-3 py-3 text-center text-[10px] uppercase tracking-[0.12em] sm:px-4 sm:py-4 sm:text-[10px] sm:tracking-[0.15em]">
               <span className="font-semibold text-gold">Integrated Market Data Terminal</span>
             </div>
           </footer>
+          <RefreshButton />
         </ThemeProvider>
       </body>
     </html>

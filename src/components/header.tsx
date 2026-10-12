@@ -19,7 +19,7 @@ export function Header() {
                 href="https://taikhoan.ocbs.com.vn/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="cta-border inline-flex items-center gap-1.5 rounded-md border bg-gold/10 px-2.5 py-1 text-[11px] font-bold uppercase leading-none tracking-[0.12em] text-brand transition-colors hover:bg-brand hover:text-background"
+                className="cta-border inline-flex items-center gap-1.5 rounded-md border bg-gold/10 px-2.5 py-1 text-[12px] font-bold uppercase leading-none tracking-[0.12em] text-brand transition-colors hover:bg-brand hover:text-background"
               >
                 <span className="cta-dot inline-block h-1.5 w-1.5 rounded-full bg-gold" />
                 Mở TK OCBS
@@ -56,10 +56,10 @@ export function Header() {
               priority
             />
           </span>
-          <h1 className="text-base font-bold tracking-[0.08em] text-brand sm:text-lg">
+          <h1 className="text-[18px] font-bold tracking-[0.08em] text-brand">
             CAPTAIN <span className="text-gold">X</span>
           </h1>
-          <span className="hidden border-l-2 border-gold pl-3 text-[10px] uppercase tracking-[0.15em] font-semibold text-foreground sm:inline-block sm:text-[11px]">
+          <span className="hidden border-l-2 border-gold pl-3 text-[10px] uppercase tracking-[0.15em] font-semibold text-foreground sm:inline-block sm:text-[12px]">
             Ryl Nguyen
             <span className="ml-2 text-gold">· CEO OCBS</span>
           </span>

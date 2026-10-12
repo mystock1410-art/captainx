@@ -31,7 +31,7 @@ export function VniMarketInfo() {
   return (
     <section className="space-y-1.5">
       <div className="flex items-center justify-between gap-2 border-l-2 border-gold pl-2.5">
-        <h3 className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
+        <h3 className="shrink-0 text-[16px] font-bold uppercase tracking-[0.18em] text-brand">
           VNI Daily Market Info
         </h3>
         <div className="flex min-w-0 items-center gap-2">
@@ -74,7 +74,7 @@ function ForeignBlock({ data }: { data: MarketAnalyze }) {
 
   return (
     <div>
-      <h4 className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-gold">
+      <h4 className="mb-1.5 text-[12px] font-bold uppercase tracking-[0.12em] text-gold">
         Top 5 giao dịch khối ngoại
       </h4>
 
@@ -93,7 +93,7 @@ function ForeignBlock({ data }: { data: MarketAnalyze }) {
             {netBuy.length ? (
               netBuy.map((f) => <FlowRow key={f.symbol} flow={f} maxAbs={maxAbs} side="buy" />)
             ) : (
-              <p className="text-[11px] text-muted-foreground">—</p>
+              <p className="text-[12px] text-muted-foreground">—</p>
             )}
           </div>
         </div>
@@ -105,7 +105,7 @@ function ForeignBlock({ data }: { data: MarketAnalyze }) {
             {netSell.length ? (
               netSell.map((f) => <FlowRow key={f.symbol} flow={f} maxAbs={maxAbs} side="sell" />)
             ) : (
-              <p className="text-[11px] text-muted-foreground">—</p>
+              <p className="text-[12px] text-muted-foreground">—</p>
             )}
           </div>
         </div>
@@ -117,7 +117,7 @@ function ForeignBlock({ data }: { data: MarketAnalyze }) {
 function Tile({ label, value, tone }: { label: string; value: string; tone: "up" | "down" }) {
   return (
     <div className="rounded-sm bg-muted/40 px-2 py-1.5">
-      <div className="truncate text-[9px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
       <div
         className={cn(
           "font-mono text-sm font-bold tabular-nums sm:text-base",
@@ -139,7 +139,7 @@ function FlowRow({ flow, maxAbs, side }: { flow: ForeignFlow; maxAbs: number; si
       {fmtTy(flow.value)}
     </span>
   );
-  const sym = <span className="w-10 shrink-0 font-mono text-[13px] font-bold">{flow.symbol}</span>;
+  const sym = <span className="w-10 shrink-0 font-mono text-[14px] font-bold">{flow.symbol}</span>;
   const track = (
     <div className="relative h-2 min-w-0 flex-1 rounded-sm bg-muted">
       <div
@@ -154,7 +154,7 @@ function FlowRow({ flow, maxAbs, side }: { flow: ForeignFlow; maxAbs: number; si
     <div className="flex items-center gap-2">
       {val}
       {track}
-      <span className="w-10 shrink-0 text-right font-mono text-[13px] font-bold">{flow.symbol}</span>
+      <span className="w-10 shrink-0 text-right font-mono text-[14px] font-bold">{flow.symbol}</span>
     </div>
   ) : (
     <div className="flex items-center gap-2">
@@ -203,22 +203,22 @@ function LiquidityBlock({ data }: { data: MarketAnalyze }) {
 
   return (
     <div className="border-t border-border pt-2.5">
-      <h4 className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-gold">
+      <h4 className="mb-1.5 text-[12px] font-bold uppercase tracking-[0.12em] text-gold">
         Thanh khoản thị trường
       </h4>
 
       <div className="flex items-end justify-between gap-3">
         <div>
-          <div className="text-[9px] uppercase tracking-wider text-muted-foreground">
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
             GTGD phiên gần nhất
           </div>
-          <div className="font-mono text-2xl font-bold leading-tight tabular-nums sm:text-[28px]">
+          <div className="font-mono text-[18px] font-bold leading-tight tabular-nums sm:text-[18px]">
             {fmtTy(data.gtgd)}
             <span className="ml-1 text-base font-semibold text-muted-foreground">tỷ</span>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-[9px] uppercase tracking-wider text-muted-foreground">
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
             So cùng giờ phiên trước
           </div>
           <div className="font-mono text-sm text-muted-foreground">—</div>
@@ -226,7 +226,7 @@ function LiquidityBlock({ data }: { data: MarketAnalyze }) {
       </div>
 
       <div className="mt-2 flex gap-2 pb-4">
-        <div className="flex w-12 shrink-0 flex-col justify-between py-0.5 text-right font-mono text-[9px] text-muted-foreground">
+        <div className="flex w-12 shrink-0 flex-col justify-between py-0.5 text-right font-mono text-[10px] text-muted-foreground">
           <span>{fmtTy(niceMax)}</span>
           <span>{fmtTy(niceMax / 2)}</span>
           <span>0</span>
@@ -266,7 +266,7 @@ function LiquidityBlock({ data }: { data: MarketAnalyze }) {
                   strokeLinecap="round"
                 />
               </svg>
-              <div className="pointer-events-none absolute inset-x-0 -bottom-5 h-4 font-mono text-[9px] text-muted-foreground">
+              <div className="pointer-events-none absolute inset-x-0 -bottom-5 h-4 font-mono text-[10px] text-muted-foreground">
                 {xTicks.map((t) => (
                   <span
                     key={t.label}
@@ -279,7 +279,7 @@ function LiquidityBlock({ data }: { data: MarketAnalyze }) {
               </div>
             </>
           ) : (
-            <div className="flex h-full items-center justify-center text-[11px] text-muted-foreground">
+            <div className="flex h-full items-center justify-center text-[12px] text-muted-foreground">
               Chưa có dữ liệu thanh khoản
             </div>
           )}
