@@ -100,7 +100,7 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
     <section className="flex flex-col gap-3 lg:row-span-3 lg:grid lg:grid-rows-subgrid lg:gap-3">
       <div className="flex flex-col gap-2.5 border-l-2 border-brand pl-2.5">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-[16px] font-bold uppercase leading-none tracking-[0.18em] text-brand">
+          <h3 className="text-[14px] font-bold uppercase leading-none tracking-[0.18em] text-brand">
             {title}
           </h3>
           <CollapseButton collapsed={sectionCollapsed} onClick={toggleSection} label={title} />
@@ -122,7 +122,7 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
-          <label className="flex cursor-pointer items-center gap-1.5 text-[12px] uppercase tracking-wider text-muted-foreground">
+          <label className="flex cursor-pointer items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
             <input
               type="checkbox"
               checked={breakingOnly}
@@ -131,7 +131,7 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
             />
             Chỉ tin nóng
           </label>
-          <label className="flex cursor-pointer items-center gap-1.5 text-[12px] uppercase tracking-wider text-muted-foreground">
+          <label className="flex cursor-pointer items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
             <input
               type="checkbox"
               checked={importantOnly}
@@ -151,13 +151,13 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
 
       <article className="card-elevated rounded-sm">
         <header className="flex items-center gap-2 border-b border-border px-4 py-2">
-          <span className="inline-flex items-center rounded-sm border border-gold px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.15em] text-gold">
+          <span className="inline-flex items-center rounded-sm border border-gold px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.15em] text-gold">
             Live
           </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground/80">
+          <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-foreground/80">
             Bản tin liên tục
           </span>
-          <span className="ml-auto font-mono text-[10px] tabular-nums text-muted-foreground">
+          <span className="ml-auto font-mono text-[8px] tabular-nums text-muted-foreground">
             {loading && !hasData ? "Đang tải…" : `${items.length} cập nhật`}
           </span>
           <button
@@ -172,10 +172,10 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
         {!collapsed && (
           <div className="max-h-[520px] overflow-y-auto px-4 py-1">
             {error && !hasData && (
-              <p className="py-8 text-center text-sm text-down">Lỗi: {error}</p>
+              <p className="py-8 text-center text-[12px] text-down">Lỗi: {error}</p>
             )}
             {hasData && items.length === 0 && (
-              <p className="py-8 text-center text-sm text-muted-foreground">
+              <p className="py-8 text-center text-[12px] text-muted-foreground">
                 Không có tin phù hợp.
               </p>
             )}
@@ -196,21 +196,21 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
                       <div className="mb-0.5 flex flex-wrap items-center gap-1.5">
                         <SourceBadge source={item.source} />
                         {item.breaking && (
-                          <span className="rounded bg-down/20 px-1.5 py-px text-[10px] font-bold uppercase tracking-wider text-down">
+                          <span className="rounded bg-down/20 px-1.5 py-px text-[8px] font-bold uppercase tracking-wider text-down">
                             Nóng
                           </span>
                         )}
                         {item.important && !item.breaking && (
-                          <span className="rounded bg-gold/20 px-1.5 py-px text-[10px] font-bold uppercase tracking-wider text-gold">
+                          <span className="rounded bg-gold/20 px-1.5 py-px text-[8px] font-bold uppercase tracking-wider text-gold">
                             Quan trọng
                           </span>
                         )}
                         {variant === "en" && item.title_vi && (
-                          <span className="rounded bg-muted px-1.5 py-px text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                          <span className="rounded bg-muted px-1.5 py-px text-[8px] font-medium uppercase tracking-wider text-muted-foreground">
                             Đã dịch
                           </span>
                         )}
-                        <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+                        <span className="font-mono text-[8px] tabular-nums text-muted-foreground">
                           {fmtTime(item.published)}
                         </span>
                       </div>
@@ -219,7 +219,7 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
                           href={item.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 text-sm font-medium text-foreground hover:underline"
+                          className="flex-1 text-[12px] font-medium text-foreground hover:underline"
                         >
                           {shown}
                         </a>
@@ -241,7 +241,7 @@ export function NewsPanel({ title, liveSources, headlineSources, variant = "vi" 
                         )}
                       </div>
                       {summary && isOpen && (
-                        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+                        <p className="mt-1.5 text-[10px] leading-relaxed text-muted-foreground">
                           {summary}
                         </p>
                       )}
@@ -273,19 +273,19 @@ function HotNewsCard({
       <div className="mb-1.5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Flame className="h-3.5 w-3.5 text-down" />
-          <span className="text-[12px] font-bold uppercase tracking-[0.18em] text-down">
+          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-down">
             Hot News
           </span>
         </div>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-down/70">
+        <span className="font-mono text-[8px] uppercase tracking-wider text-down/70">
           {items.length}/3
         </span>
       </div>
 
       {loading && items.length === 0 ? (
-        <p className="flex flex-1 items-center justify-center py-1 text-center text-xs text-down/60">Đang tải…</p>
+        <p className="flex flex-1 items-center justify-center py-1 text-center text-[10px] text-down/60">Đang tải…</p>
       ) : items.length === 0 ? (
-        <p className="flex flex-1 items-center justify-center py-1 text-center text-xs text-down/60">
+        <p className="flex flex-1 items-center justify-center py-1 text-center text-[10px] text-down/60">
           Chưa có tin nóng / quan trọng trong các nguồn đang bật.
         </p>
       ) : (
@@ -293,17 +293,17 @@ function HotNewsCard({
           {items.map((item) => {
             const shown = item.title_vi || item.title;
             return (
-              <li key={item.id} className="flex gap-2 text-[14px] leading-snug">
+              <li key={item.id} className="flex gap-2 text-[12px] leading-snug">
                 <span className="mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full bg-down" />
                 <div className="flex-1">
-                  <span className="mr-1.5 font-mono text-[10px] tabular-nums text-down/80">
+                  <span className="mr-1.5 font-mono text-[8px] tabular-nums text-down/80">
                     {fmtTime(item.published)}
                   </span>
-                  <span className="mr-1.5 rounded bg-down/25 px-1 py-px text-[10px] font-bold uppercase tracking-wider text-down">
+                  <span className="mr-1.5 rounded bg-down/25 px-1 py-px text-[8px] font-bold uppercase tracking-wider text-down">
                     {item.source}
                   </span>
                   {variant === "en" && item.title_vi && (
-                    <span className="mr-1.5 rounded bg-down/15 px-1 py-px text-[10px] font-medium uppercase tracking-wider text-down/80">
+                    <span className="mr-1.5 rounded bg-down/15 px-1 py-px text-[8px] font-medium uppercase tracking-wider text-down/80">
                       Đã dịch
                     </span>
                   )}

@@ -21,8 +21,6 @@ export default function Page() {
 
       <WorldTicker />
 
-      <MarketBriefPanel />
-
       <div className="grid grid-cols-1 gap-x-4 gap-y-4 lg:grid-cols-2 lg:gap-y-0 lg:grid-rows-[auto_auto_1fr]">
         <NewsPanel
           title="Thông tin trong nước"
@@ -37,6 +35,8 @@ export default function Page() {
           variant="en"
         />
       </div>
+
+      <MarketBriefPanel />
     </main>
   );
 }

@@ -99,7 +99,7 @@ export function TickerBar() {
     <div className="border-b border-border bg-background">
       <div className="mx-auto flex max-w-[1600px] flex-col items-stretch gap-2 px-4 py-2.5 lg:flex-row lg:items-start lg:gap-3">
         <div className="mt-0.5 hidden shrink-0 self-stretch border-l-2 border-gold pl-2.5 lg:flex lg:items-center">
-          <h3 className="text-[16px] font-bold uppercase tracking-[0.18em] text-brand">
+          <h3 className="text-[14px] font-bold uppercase tracking-[0.18em] text-brand">
             Watchlist
           </h3>
         </div>
@@ -116,15 +116,15 @@ export function TickerBar() {
             />
           ))}
           {(!hydrated || (loading && quotes.length === 0)) && (
-            <div className="col-span-full text-xs text-muted-foreground">Đang tải watchlist…</div>
+            <div className="col-span-full text-[10px] text-muted-foreground">Đang tải watchlist…</div>
           )}
           {error && quotes.length === 0 && (
-            <div className="col-span-full text-xs text-down">Lỗi API: {error}</div>
+            <div className="col-span-full text-[10px] text-down">Lỗi API: {error}</div>
           )}
         </div>
         <button
           onClick={() => setOpen(true)}
-          className="cta-border order-1 inline-flex shrink-0 items-center gap-1.5 self-end rounded-sm border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider lg:order-none lg:self-auto"
+          className="cta-border order-1 inline-flex shrink-0 items-center gap-1.5 self-end rounded-sm border px-2.5 py-1 text-[8px] font-semibold uppercase tracking-wider lg:order-none lg:self-auto"
         >
           <span className="cta-dot inline-block h-1.5 w-1.5 rounded-full bg-gold" />
           <Settings2 className="cta-blink h-3 w-3" />
@@ -199,27 +199,27 @@ function TickerChip({
       ) : (
         <span
           className={cn(
-            "inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-muted-foreground ring-1",
+            "inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-muted text-[8px] font-bold text-muted-foreground ring-1",
             ringCls
           )}
         >
           {quote.symbol.slice(0, 2)}
         </span>
       )}
-      <span className="font-mono text-[16px] font-bold tracking-[0.04em] shrink-0">
+      <span className="font-mono text-[14px] font-bold tracking-[0.04em] shrink-0">
         {quote.symbol}
       </span>
       {/* Intraday candlestick of today's session, between the ticker and price */}
       <MiniCandles candles={candles} className="h-7 min-w-0 flex-1" />
       {hasData ? (
         <div className="flex shrink-0 items-baseline gap-1.5 whitespace-nowrap font-mono tabular-nums">
-          <span className={cn("min-w-[5ch] text-right text-base font-bold", toneTxt)}>
+          <span className={cn("min-w-[5ch] text-right text-[14px] font-bold", toneTxt)}>
             {formatPrice(quote.price!)}
           </span>
-          <span className={cn("min-w-[5ch] text-right text-[12px]", toneTxt)}>
+          <span className={cn("min-w-[5ch] text-right text-[10px]", toneTxt)}>
             {quote.change != null ? formatChange(quote.change) : ""}
           </span>
-          <span className={cn("min-w-[6ch] text-right text-[12px] font-semibold", toneTxt)}>
+          <span className={cn("min-w-[6ch] text-right text-[10px] font-semibold", toneTxt)}>
             {formatPct(quote.changePct!)}
           </span>
         </div>

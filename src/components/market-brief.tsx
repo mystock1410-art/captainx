@@ -129,7 +129,7 @@ export function MarketBriefPanel() {
         aria-expanded={open}
       >
         <Sparkles className="h-3.5 w-3.5 text-gold" />
-        <h3 className="text-[16px] font-bold uppercase tracking-[0.18em] text-brand">
+        <h3 className="text-[14px] font-bold uppercase tracking-[0.18em] text-brand">
           Phân tích AI · Thị trường VN & Quốc tế
         </h3>
         {data && (
@@ -139,22 +139,22 @@ export function MarketBriefPanel() {
           </>
         )}
         {data?.model && (
-          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+          <span className="rounded bg-muted px-1.5 py-0.5 text-[8px] font-mono text-muted-foreground">
             {data.model}
           </span>
         )}
         {loading ? (
-          <span className="ml-auto text-[10px] text-muted-foreground" key={tick}>
+          <span className="ml-auto text-[8px] text-muted-foreground" key={tick}>
             Đang phân tích…
           </span>
         ) : data ? (
-          <span className="ml-auto text-[10px] text-muted-foreground" key={tick}>
+          <span className="ml-auto text-[8px] text-muted-foreground" key={tick}>
             Cập nhật {fmtAgo(data.generated_at)}
           </span>
         ) : (
           <span className="ml-auto inline-flex items-center gap-1.5">
             <span className="cta-dot inline-block h-1.5 w-1.5 rounded-full bg-gold" />
-            <span className="cta-blink text-[12px] font-bold uppercase tracking-[0.12em]">
+            <span className="cta-blink text-[10px] font-bold uppercase tracking-[0.12em]">
               Click để phân tích
             </span>
           </span>
@@ -172,7 +172,7 @@ export function MarketBriefPanel() {
             <button
               onClick={(e) => { e.stopPropagation(); load(); }}
               disabled={loading}
-              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-50"
+              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[10px] text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-50"
             >
               <RefreshCw className={cn("h-3 w-3", loading && "animate-spin")} />
               Phân tích lại
@@ -180,16 +180,16 @@ export function MarketBriefPanel() {
           </div>
 
           {error && (
-            <div className="space-y-2 p-4 text-sm">
+            <div className="space-y-2 p-4 text-[12px]">
               <div className="flex items-start gap-2 text-down">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
                 <div>
                   <div className="font-semibold">Không tải được phân tích AI</div>
-                  <div className="text-xs text-muted-foreground">{error}</div>
+                  <div className="text-[10px] text-muted-foreground">{error}</div>
                 </div>
               </div>
               {/HTTP 429|quota|rate|529|overload/i.test(error) && (
-                <div className="rounded-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+                <div className="rounded-md border border-border bg-muted/50 px-3 py-2 text-[10px] text-muted-foreground">
                   Claude API đang bị giới hạn truy cập hoặc quá tải. Thử lại sau ít phút, hoặc nâng cấp tier tại{" "}
                   <a href="https://console.anthropic.com/settings/limits" target="_blank" rel="noopener noreferrer" className="text-foreground underline">
                     console.anthropic.com
@@ -200,7 +200,7 @@ export function MarketBriefPanel() {
           )}
 
           {!data && !error && loading && (
-            <div className="p-6 text-center text-sm text-muted-foreground">Đang gọi Claude…</div>
+            <div className="p-6 text-center text-[12px] text-muted-foreground">Đang gọi Claude…</div>
           )}
 
           {data && (
@@ -220,14 +220,14 @@ export function MarketBriefPanel() {
 
               {data.catalysts.length > 0 && (
                 <div>
-                  <h4 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+                  <h4 className="mb-2 text-[8px] font-semibold uppercase tracking-[0.18em] text-brand">
                     Catalysts chính
                   </h4>
                   <ul className="grid grid-cols-1 gap-1.5 md:grid-cols-2">
                     {data.catalysts.map((c, i) => (
-                      <li key={i} className="flex items-baseline gap-2 leading-snug text-sm">
+                      <li key={i} className="flex items-baseline gap-2 leading-snug text-[12px]">
                         <span className={cn(
-                          "font-mono text-sm font-bold w-4 text-center shrink-0",
+                          "font-mono text-[12px] font-bold w-4 text-center shrink-0",
                           c.direction === "+" ? "text-up" : c.direction === "-" ? "text-down" : "text-muted-foreground"
                         )}>
                           {c.direction}
@@ -237,7 +237,7 @@ export function MarketBriefPanel() {
                           <span className="text-muted-foreground">{c.detail}</span>
                           {c.region && (
                             <span className={cn(
-                              "ml-1.5 rounded px-1 py-px text-[10px] font-bold uppercase tracking-wider",
+                              "ml-1.5 rounded px-1 py-px text-[8px] font-bold uppercase tracking-wider",
                               c.region === "global" ? "bg-blue-500/15 text-blue-600 dark:text-blue-400" : "bg-foreground/10 text-foreground/60"
                             )}>
                               {c.region === "global" ? "QT" : "VN"}
@@ -252,7 +252,7 @@ export function MarketBriefPanel() {
 
               {data.watchlist_notes.length > 0 && (
                 <div>
-                  <h4 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+                  <h4 className="mb-2 text-[8px] font-semibold uppercase tracking-[0.18em] text-brand">
                     Ghi chú theo mã
                   </h4>
                   <ul className="flex flex-wrap gap-2">
@@ -260,7 +260,7 @@ export function MarketBriefPanel() {
                       <li
                         key={i}
                         className={cn(
-                          "rounded-md border px-2 py-1 text-xs",
+                          "rounded-md border px-2 py-1 text-[10px]",
                           w.sentiment === "bullish" ? "border-up/40 bg-up/5 text-up"
                           : w.sentiment === "bearish" ? "border-down/40 bg-down/5 text-down"
                           : "border-border bg-muted text-muted-foreground"
@@ -276,10 +276,10 @@ export function MarketBriefPanel() {
 
               {data.risks.length > 0 && (
                 <div>
-                  <h4 className="mb-2 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+                  <h4 className="mb-2 flex items-center gap-1.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-brand">
                     <AlertTriangle className="h-3 w-3 text-gold" /> Rủi ro theo dõi
                   </h4>
-                  <ul className="list-disc space-y-1 pl-5 text-xs leading-relaxed text-muted-foreground">
+                  <ul className="list-disc space-y-1 pl-5 text-[10px] leading-relaxed text-muted-foreground">
                     {data.risks.map((r, i) => <li key={i}>{r}</li>)}
                   </ul>
                 </div>
@@ -302,7 +302,7 @@ function SentPill({ label, section }: { label: string; section: MarketBriefSecti
   const Icon = sentIcon(section.sentiment);
   return (
     <span className={cn(
-      "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold",
+      "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[8px] font-semibold",
       pillClasses(section.sentiment)
     )}>
       <span className="opacity-70">{label}</span>
@@ -318,12 +318,12 @@ function SectionCard({ icon, title, section }: { icon: React.ReactNode; title: s
     <div className="rounded-sm border border-border bg-background p-3">
       <div className="mb-2 flex items-center gap-2">
         <span className="text-brand">{icon}</span>
-        <h4 className="text-[16px] font-bold uppercase tracking-[0.18em] text-brand">{title}</h4>
+        <h4 className="text-[14px] font-bold uppercase tracking-[0.18em] text-brand">{title}</h4>
       </div>
-      <div className={cn("mb-2 inline-flex items-center gap-1.5 rounded border px-2 py-1 text-xs font-semibold", sentClasses(section.sentiment))}>
+      <div className={cn("mb-2 inline-flex items-center gap-1.5 rounded border px-2 py-1 text-[10px] font-semibold", sentClasses(section.sentiment))}>
         <Icon className="h-3.5 w-3.5" />
         {SENT_LABEL[section.sentiment]}
-        <span className="ml-1 font-mono text-[10px] opacity-70">{section.confidence}%</span>
+        <span className="ml-1 font-mono text-[8px] opacity-70">{section.confidence}%</span>
       </div>
       <div className="mb-2 h-1 w-full rounded-full bg-foreground/10">
         <div
@@ -334,7 +334,7 @@ function SectionCard({ icon, title, section }: { icon: React.ReactNode; title: s
           style={{ width: `${Math.max(0, Math.min(100, section.confidence))}%` }}
         />
       </div>
-      <p className="text-sm leading-relaxed text-foreground whitespace-pre-line">{section.analysis}</p>
+      <p className="text-[12px] leading-relaxed text-foreground whitespace-pre-line">{section.analysis}</p>
     </div>
   );
 }

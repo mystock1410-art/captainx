@@ -80,7 +80,7 @@ export default function RootLayout({
           <TickerBar />
           {children}
           <footer className="bar-elevated-footer">
-            <div className="mx-auto flex max-w-[1600px] items-center justify-center px-3 py-3 text-center text-[10px] uppercase tracking-[0.12em] sm:px-4 sm:py-4 sm:text-[10px] sm:tracking-[0.15em]">
+            <div className="mx-auto flex max-w-[1600px] items-center justify-center px-3 py-3 text-center text-[8px] uppercase tracking-[0.12em] sm:px-4 sm:py-4 sm:text-[8px] sm:tracking-[0.15em]">
               <span className="font-semibold text-gold">Integrated Market Data Terminal</span>
             </div>
           </footer>

@@ -61,8 +61,8 @@ export function WatchlistModal({
       >
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <div>
-            <h2 id="watchlist-modal-title" className="text-base font-semibold">Quản lý Watchlist</h2>
-            <p className="text-[10px] text-muted-foreground">
+            <h2 id="watchlist-modal-title" className="text-[14px] font-semibold">Quản lý Watchlist</h2>
+            <p className="text-[8px] text-muted-foreground">
               Tự động sắp xếp theo A→Z ·{" "}
               <span className={full ? "font-semibold text-gold" : ""}>
                 {symbols.length}/{WATCHLIST_MAX} mã
@@ -83,18 +83,18 @@ export function WatchlistModal({
               placeholder="Thêm mã, ví dụ FPT..."
               maxLength={10}
               disabled={full}
-              className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-foreground/40 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-[12px] outline-none focus:border-foreground/40 disabled:cursor-not-allowed disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={full}
-              className="inline-flex items-center gap-1 rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-1 rounded-md bg-foreground px-3 py-2 text-[12px] font-medium text-background hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Plus className="h-4 w-4" /> Thêm
             </button>
           </div>
           {full && (
-            <p role="alert" className="text-[12px] text-gold">
+            <p role="alert" className="text-[10px] text-gold">
               Đã đạt tối đa {WATCHLIST_MAX} mã. Xóa bớt để thêm mã mới.
             </p>
           )}
@@ -107,7 +107,7 @@ export function WatchlistModal({
                 key={s}
                 className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5"
               >
-                <span className="flex-1 font-mono text-sm font-medium">{s}</span>
+                <span className="flex-1 font-mono text-[12px] font-medium">{s}</span>
                 <button
                   onClick={() => onRemove(s)}
                   className="text-muted-foreground hover:text-down"
@@ -118,7 +118,7 @@ export function WatchlistModal({
               </li>
             ))}
             {symbols.length === 0 && (
-              <li className="text-sm text-muted-foreground text-center py-6">
+              <li className="text-[12px] text-muted-foreground text-center py-6">
                 Chưa có mã nào. Thêm mã ở trên.
               </li>
             )}
@@ -128,13 +128,13 @@ export function WatchlistModal({
         <div className="flex items-center justify-between border-t border-border px-5 py-3">
           <button
             onClick={onReset}
-            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground"
           >
             <RotateCcw className="h-3.5 w-3.5" /> Khôi phục mặc định
           </button>
           <button
             onClick={onClose}
-            className="rounded-md bg-foreground px-4 py-1.5 text-sm font-medium text-background hover:opacity-90"
+            className="rounded-md bg-foreground px-4 py-1.5 text-[12px] font-medium text-background hover:opacity-90"
           >
             Xong
           </button>

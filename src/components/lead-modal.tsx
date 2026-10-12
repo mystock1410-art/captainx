@@ -143,18 +143,18 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
         <div className="space-y-3 border-b border-border px-5 py-4">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-gold" />
-            <h3 id="lead-modal-title" className="text-[12px] font-semibold uppercase tracking-[0.18em] text-brand">
+            <h3 id="lead-modal-title" className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
               Truy cập Phân tích AI
             </h3>
           </div>
-          <p className="text-[14px] leading-relaxed text-foreground/85">
+          <p className="text-[12px] leading-relaxed text-foreground/85">
             <span className="font-semibold text-brand">AI Captain X</span> sẽ tập hợp các thông tin trên trang bao gồm tất cả thông tin{" "}
             <span className="font-semibold">Vĩ mô</span>,{" "}
             <span className="font-semibold">Doanh nghiệp</span>, các Data đã được thu thập từ ngày đầu tạo trang để đưa ra nhận định chung về{" "}
             <span className="font-semibold">thị trường Việt Nam</span>,{" "}
             <span className="font-semibold">thị trường thế giới</span> và các Highlight về Catalyst của thị trường, các rủi ro cần theo dõi và các Highlight mới nhất liên quan Doanh nghiệp.
           </p>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-[10px] text-muted-foreground">
             Để tiếp tục, vui lòng cung cấp thông tin liên hệ bên dưới.
           </p>
         </div>
@@ -173,7 +173,7 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
             onChange={(e) => update("website", e.target.value)}
             className="absolute left-[-9999px] h-0 w-0 opacity-0"
           />
-          <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+          <div className="mb-1 text-[8px] font-semibold uppercase tracking-[0.18em] text-brand">
             Thông tin liên hệ
           </div>
           <Field
@@ -211,7 +211,7 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
           />
 
           {error && (
-            <div role="alert" aria-live="assertive" className="flex items-start gap-2 rounded-sm border border-down/40 bg-down/10 px-3 py-2 text-[12px] text-down">
+            <div role="alert" aria-live="assertive" className="flex items-start gap-2 rounded-sm border border-down/40 bg-down/10 px-3 py-2 text-[10px] text-down">
               <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span>{error}</span>
             </div>
@@ -221,7 +221,7 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="rounded-sm border border-border px-3 py-1.5 text-[12px] text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="rounded-sm border border-border px-3 py-1.5 text-[10px] text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               Hủy
             </button>
@@ -229,7 +229,7 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
               type="submit"
               disabled={!isValid || submitting}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-[12px] font-semibold transition-colors",
+                "inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-[10px] font-semibold transition-colors",
                 isValid
                   ? "bg-brand text-background hover:bg-brand/90"
                   : "border border-gold/40 bg-gold/10 text-gold cursor-not-allowed",
@@ -241,7 +241,7 @@ export function LeadModal({ open, onClose, onSubmitted }: Props) {
             </button>
           </div>
 
-          <p className="pt-1 text-[10px] text-muted-foreground">
+          <p className="pt-1 text-[8px] text-muted-foreground">
             Thông tin chỉ được dùng cho mục đích cá nhân hóa phân tích, không chia sẻ với bên thứ ba.
           </p>
         </form>
@@ -281,12 +281,12 @@ function OcbsAccountPopup({ onClose }: { onClose: () => void }) {
         <div className="space-y-4 px-6 py-5">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-gold" />
-            <h3 id="ocbs-popup-title" className="text-[12px] font-semibold uppercase tracking-[0.18em] text-brand">
+            <h3 id="ocbs-popup-title" className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
               Mở tài khoản OCBS
             </h3>
           </div>
 
-          <p className="text-[14px] leading-relaxed text-foreground/90">
+          <p className="text-[12px] leading-relaxed text-foreground/90">
             Bạn cần tạo <span className="font-semibold text-brand">tài khoản Chứng khoán tại OCBS</span> để
             sử dụng chức năng <span className="font-semibold text-gold">AI Phân tích</span>.
           </p>
@@ -295,7 +295,7 @@ function OcbsAccountPopup({ onClose }: { onClose: () => void }) {
             href="https://taikhoan.ocbs.com.vn/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-brand px-3 py-2 text-[14px] font-semibold text-background hover:bg-brand/90"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-brand px-3 py-2 text-[12px] font-semibold text-background hover:bg-brand/90"
           >
             <ExternalLink className="h-3.5 w-3.5" />
             Mở tài khoản tại taikhoan.ocbs.com.vn
@@ -303,21 +303,21 @@ function OcbsAccountPopup({ onClose }: { onClose: () => void }) {
 
           {hasContact && (
             <div className="space-y-2 rounded-sm border border-border bg-background/50 p-3">
-              <p className="text-[12px] uppercase tracking-[0.15em] text-muted-foreground">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
                 Hoặc liên hệ trực tiếp
               </p>
-              <p className="text-[14px] font-semibold text-foreground">
+              <p className="text-[12px] font-semibold text-foreground">
                 Mr X — Chuyên gia Quản lý Tài sản hàng đầu
               </p>
               {OCBS_ZALO && (
-                <div className="flex items-center gap-2 text-[12px] text-foreground/85">
+                <div className="flex items-center gap-2 text-[10px] text-foreground/85">
                   <MessageCircle className="h-3.5 w-3.5 text-gold" />
                   <span className="font-mono">Zalo:</span>
                   <span className="font-mono text-muted-foreground">{OCBS_ZALO}</span>
                 </div>
               )}
               {OCBS_PHONE && (
-                <div className="flex items-center gap-2 text-[12px] text-foreground/85">
+                <div className="flex items-center gap-2 text-[10px] text-foreground/85">
                   <Phone className="h-3.5 w-3.5 text-gold" />
                   <span className="font-mono">SĐT:</span>
                   <span className="font-mono text-muted-foreground">{OCBS_PHONE}</span>
@@ -332,7 +332,7 @@ function OcbsAccountPopup({ onClose }: { onClose: () => void }) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={onClose}
-              className="rounded-sm border border-border px-3 py-1.5 text-[12px] text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="rounded-sm border border-border px-3 py-1.5 text-[10px] text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               Đã hiểu
             </a>
@@ -362,7 +362,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+      <span className="mb-1 block text-[8px] font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
         {required && <span className="ml-0.5 text-down">*</span>}
       </span>
@@ -373,7 +373,7 @@ function Field({
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="w-full rounded-sm border border-border bg-background px-2.5 py-1.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+        className="w-full rounded-sm border border-border bg-background px-2.5 py-1.5 text-[12px] text-foreground placeholder:text-muted-foreground/60 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
       />
     </label>
   );
@@ -386,10 +386,10 @@ function SamplePreview() {
     <div className="space-y-4 border-t border-border bg-background/40 px-5 py-4">
       <div className="flex items-center gap-2">
         <Sparkles className="h-3.5 w-3.5 text-gold" />
-        <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+        <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-brand">
           Ví dụ nội dung phân tích
         </span>
-        <span className="ml-auto rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+        <span className="ml-auto rounded bg-muted px-1.5 py-0.5 text-[8px] font-mono text-muted-foreground">
           MẪU · KHÔNG REALTIME
         </span>
       </div>
@@ -414,10 +414,10 @@ function SamplePreview() {
       </div>
 
       <div>
-        <h4 className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+        <h4 className="mb-1.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-brand">
           Catalysts chính
         </h4>
-        <ul className="grid grid-cols-1 gap-1.5 text-[12px] leading-snug md:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-1.5 text-[10px] leading-snug md:grid-cols-2">
           <SampleCatalyst dir="+" region="VN" label="Nới room tín dụng BĐS." detail="NHNN không tính dư nợ nhà ở xã hội, KCN, KCX vào hạn mức tín dụng BĐS cho 25 NHTM, hỗ trợ nhóm ngân hàng và bất động sản." />
           <SampleCatalyst dir="+" region="VN" label="Hợp tác thị trường vốn VN–Singapore." detail="Bộ Tài chính và MAS nghiên cứu cơ chế niêm yết chéo và chứng chỉ lưu ký, mở rộng kết nối thị trường vốn." />
           <SampleCatalyst dir="-" region="VN" label="Lãi suất tiết kiệm tăng." detail="Một số kỳ hạn 12 tháng vẫn 7%/năm, tạo áp lực hút dòng tiền khỏi kênh chứng khoán." />
@@ -427,10 +427,10 @@ function SamplePreview() {
       </div>
 
       <div>
-        <h4 className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+        <h4 className="mb-1.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-brand">
           Ghi chú theo mã
         </h4>
-        <ul className="flex flex-wrap gap-1.5 text-[12px]">
+        <ul className="flex flex-wrap gap-1.5 text-[10px]">
           <SampleSymbolNote symbol="VIC" tone="neutral" note="Vingroup muốn đầu tư sang Mỹ phát triển robot hình người qua VINMOTION USA; tuy nhiên cùng nhóm 'siêu trụ' đang kéo lùi VN-Index." />
           <SampleSymbolNote symbol="MWG" tone="bearish" note="Chủ tịch Nguyễn Đức Tài đăng ký mua 1 triệu cổ phiếu Điện Máy Xanh – tín hiệu cam kết của lãnh đạo, dù MWG giảm 1.85% phiên." />
           <SampleSymbolNote symbol="GAS" tone="bullish" note="Tăng mạnh 7.11% trong phiên, dẫn dắt nhóm dầu khí cùng BSR (+4.46%)." />
@@ -440,10 +440,10 @@ function SamplePreview() {
       </div>
 
       <div>
-        <h4 className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">
+        <h4 className="mb-1.5 flex items-center gap-1.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-brand">
           <AlertTriangle className="h-3 w-3 text-gold" /> Rủi ro theo dõi
         </h4>
-        <ul className="list-disc space-y-0.5 pl-5 text-[12px] leading-snug text-muted-foreground">
+        <ul className="list-disc space-y-0.5 pl-5 text-[10px] leading-snug text-muted-foreground">
           <li>Lãi suất huy động tăng trở lại có thể tiếp tục hút dòng tiền rời khỏi thị trường chứng khoán.</li>
           <li>Sự phụ thuộc lớn của VN-Index vào nhóm &apos;siêu trụ&apos; Vingroup và ngân hàng dễ gây biến động chỉ số.</li>
           <li>Căng thẳng Israel – Lebanon và rủi ro sụp đổ ngừng bắn Gaza có thể đẩy giá năng lượng và làm gia tăng tâm lý risk-off toàn cầu.</li>
@@ -469,17 +469,17 @@ function SampleSectionCard({
     <div className="rounded-sm border border-border bg-background p-3">
       <div className="mb-1.5 flex items-center gap-2">
         <span className="text-brand">{icon}</span>
-        <h5 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">{title}</h5>
+        <h5 className="text-[8px] font-semibold uppercase tracking-[0.18em] text-brand">{title}</h5>
       </div>
-      <div className={`mb-1.5 inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-[12px] font-semibold ${toneCls}`}>
+      <div className={`mb-1.5 inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-[10px] font-semibold ${toneCls}`}>
         <Minus className="h-3 w-3" />
         {sentiment}
-        <span className="ml-1 font-mono text-[10px] opacity-70">{confidence}%</span>
+        <span className="ml-1 font-mono text-[8px] opacity-70">{confidence}%</span>
       </div>
       <div className="mb-1.5 h-1 w-full rounded-full bg-foreground/10">
         <div className={`h-full rounded-full ${barCls}`} style={{ width: `${confidence}%` }} />
       </div>
-      <p className="text-[12px] leading-relaxed text-foreground/85">{analysis}</p>
+      <p className="text-[10px] leading-relaxed text-foreground/85">{analysis}</p>
     </div>
   );
 }
@@ -491,11 +491,11 @@ function SampleCatalyst({ dir, region, label, detail }: { dir: "+" | "-" | "~"; 
     region === "QT" ? "bg-blue-500/15 text-blue-600 dark:text-blue-400" : "bg-foreground/10 text-foreground/60";
   return (
     <li className="flex items-baseline gap-2">
-      <span className={`w-4 shrink-0 text-center font-mono text-sm font-bold ${dirCls}`}>{dir}</span>
+      <span className={`w-4 shrink-0 text-center font-mono text-[12px] font-bold ${dirCls}`}>{dir}</span>
       <span>
         <span className="font-semibold">{label}</span>{" "}
         <span className="text-muted-foreground">{detail}</span>
-        <span className={`ml-1.5 rounded px-1 py-px text-[10px] font-bold uppercase tracking-wider ${regionCls}`}>
+        <span className={`ml-1.5 rounded px-1 py-px text-[8px] font-bold uppercase tracking-wider ${regionCls}`}>
           {region}
         </span>
       </span>
@@ -509,7 +509,7 @@ function SampleSymbolNote({ symbol, tone, note }: { symbol: string; tone: Tone; 
     : tone === "bearish" ? "border-down/40 bg-down/5 text-down"
     : "border-border bg-muted text-muted-foreground";
   return (
-    <li className={`rounded-md border px-2 py-1 text-[12px] ${cls}`}>
+    <li className={`rounded-md border px-2 py-1 text-[10px] ${cls}`}>
       <span className="font-mono font-bold">{symbol}</span>
       <span className="ml-1.5 text-foreground/80">{note}</span>
     </li>

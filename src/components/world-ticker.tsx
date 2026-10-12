@@ -27,14 +27,14 @@ export function WorldTicker() {
 
   if (error && quotes.length === 0) {
     return (
-      <div className="rounded-md border border-border bg-card px-3 py-2 text-xs text-down">
+      <div className="rounded-md border border-border bg-card px-3 py-2 text-[10px] text-down">
         Lỗi tải chỉ số thế giới: {error}
       </div>
     );
   }
   if (loading && quotes.length === 0) {
     return (
-      <div className="rounded-md border border-border bg-card px-3 py-2 text-xs text-muted-foreground">
+      <div className="rounded-md border border-border bg-card px-3 py-2 text-[10px] text-muted-foreground">
         Đang tải chỉ số thế giới…
       </div>
     );
@@ -53,7 +53,7 @@ export function WorldTicker() {
   return (
     <section className="space-y-1.5">
       <div className="flex items-center justify-between gap-2 border-l-2 border-gold pl-2.5">
-        <h3 className="text-[16px] font-bold uppercase tracking-[0.18em] text-brand">
+        <h3 className="text-[14px] font-bold uppercase tracking-[0.18em] text-brand">
           Global Markets
         </h3>
         <CollapseButton collapsed={collapsed} onClick={toggle} label="Global Markets" />
@@ -68,7 +68,7 @@ export function WorldTicker() {
             key={key}
             className="flex flex-col gap-1.5 px-3 py-2 sm:flex-row sm:items-center sm:gap-3"
           >
-            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand sm:w-20 sm:text-[12px] md:w-24">
+            <span className="shrink-0 text-[8px] font-semibold uppercase tracking-[0.18em] text-brand sm:w-20 sm:text-[10px] md:w-24">
               {label}
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -98,23 +98,23 @@ function WorldChip({ quote }: { quote: WorldQuote }) {
           !hasPrice ? "bg-muted-foreground" : !hasChange ? "bg-gold" : up ? "bg-up" : "bg-down",
         )}
       />
-      <span className="text-[12px] font-bold tracking-[0.02em] text-foreground sm:text-[14px] md:text-[16px]">
+      <span className="text-[10px] font-bold tracking-[0.02em] text-foreground sm:text-[12px] md:text-[14px]">
         {quote.label}
       </span>
       {hasPrice ? (
         <>
-          <span className="font-mono text-[14px] font-bold tabular-nums sm:text-[16px] md:text-base">
+          <span className="font-mono text-[12px] font-bold tabular-nums sm:text-[14px] md:text-[14px]">
             {unitValue ? formatPriceInt(quote.price!) : formatPrice(quote.price!)}
           </span>
           {quote.unit && (
-            <span className="font-mono text-[10px] font-medium text-muted-foreground sm:text-[10px]">
+            <span className="font-mono text-[8px] font-medium text-muted-foreground sm:text-[8px]">
               {quote.unit}
             </span>
           )}
           {quote.change != null && (
             <span
               className={cn(
-                "font-mono text-[10px] font-semibold tabular-nums sm:text-[12px] md:text-[12px]",
+                "font-mono text-[8px] font-semibold tabular-nums sm:text-[10px] md:text-[10px]",
                 up ? "text-up" : "text-down",
               )}
             >
@@ -124,7 +124,7 @@ function WorldChip({ quote }: { quote: WorldQuote }) {
           {hasChange && (
             <span
               className={cn(
-                "font-mono text-[10px] font-semibold tabular-nums sm:text-[12px] md:text-[12px]",
+                "font-mono text-[8px] font-semibold tabular-nums sm:text-[10px] md:text-[10px]",
                 up ? "text-up" : "text-down",
               )}
             >
@@ -133,7 +133,7 @@ function WorldChip({ quote }: { quote: WorldQuote }) {
           )}
         </>
       ) : (
-        <span className="text-[12px] text-muted-foreground sm:text-[12px]">—</span>
+        <span className="text-[10px] text-muted-foreground sm:text-[10px]">—</span>
       )}
     </div>
   );

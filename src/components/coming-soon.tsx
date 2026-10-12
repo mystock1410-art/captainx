@@ -30,14 +30,14 @@ export function ComingSoon({
         <Construction
           className={cn("mx-auto mb-4 h-10 w-10", glow === "brand" ? "text-brand" : "text-gold")}
         />
-        <h2 className="mb-3 text-[18px] font-bold uppercase tracking-[0.12em] text-brand">{title}</h2>
-        <div className="text-[14px] font-medium leading-relaxed text-foreground/85">{children}</div>
+        <h2 className="mb-3 text-[16px] font-bold uppercase tracking-[0.12em] text-brand">{title}</h2>
+        <div className="text-[12px] font-medium leading-relaxed text-foreground/85">{children}</div>
         {cta && (
           <a
             href="https://taikhoan.ocbs.com.vn/"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center justify-center gap-2 rounded-sm bg-brand px-4 py-2 text-[14px] font-semibold text-background transition-colors hover:bg-brand/90"
+            className="mt-6 inline-flex items-center justify-center gap-2 rounded-sm bg-brand px-4 py-2 text-[12px] font-semibold text-background transition-colors hover:bg-brand/90"
           >
             Mở tài khoản OCBS để được tư vấn
           </a>

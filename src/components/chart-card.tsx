@@ -16,14 +16,14 @@ import { formatChangeInt, formatPct, formatPrice, formatPriceInt, cn } from "@/l
 function SlotLogo({ slot }: { slot: string }) {
   if (slot === "vnindex") {
     return (
-      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-down text-[10px] font-bold text-white ring-1 ring-white/10">
+      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-down text-[8px] font-bold text-white ring-1 ring-white/10">
         VN
       </span>
     );
   }
   if (slot === "dji" || slot === "ym") {
     return (
-      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white ring-1 ring-white/10">
+      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[8px] font-bold text-white ring-1 ring-white/10">
         DJ
       </span>
     );
@@ -159,29 +159,29 @@ export function ChartCard({
             title={open ? "Đang giao dịch" : "Đóng cửa"}
           />
           <SlotLogo slot={slot} />
-          <span className="text-[16px] font-bold uppercase tracking-[0.03em] text-brand leading-none whitespace-nowrap truncate xl:text-[18px] xl:tracking-[0.05em] 2xl:text-[18px]">
+          <span className="text-[14px] font-bold uppercase tracking-[0.03em] text-brand leading-none whitespace-nowrap truncate xl:text-[16px] xl:tracking-[0.05em] 2xl:text-[16px]">
             {label}
           </span>
         </div>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground whitespace-nowrap shrink-0">{symbol}</span>
+        <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground whitespace-nowrap shrink-0">{symbol}</span>
       </div>
       <div className="mb-1.5">
-        <div className="truncate text-[10px] uppercase tracking-wider text-muted-foreground leading-tight" title={name}>{name}</div>
+        <div className="truncate text-[8px] uppercase tracking-wider text-muted-foreground leading-tight" title={name}>{name}</div>
         <div className="flex items-baseline gap-2">
           {price !== null ? (
             <>
-              <span className="font-mono text-base font-bold tabular-nums">
+              <span className="font-mono text-[14px] font-bold tabular-nums">
                 {unit ? formatPriceInt(price) : formatPrice(price)}
               </span>
               {unit && (
-                <span className="font-mono text-[10px] font-medium text-muted-foreground">
+                <span className="font-mono text-[8px] font-medium text-muted-foreground">
                   {unit}
                 </span>
               )}
               {changePct !== null && change !== null && (
                 <span
                   className={cn(
-                    "font-mono text-[10px] font-semibold tabular-nums",
+                    "font-mono text-[8px] font-semibold tabular-nums",
                     up ? "text-up" : "text-down"
                   )}
                 >
@@ -190,11 +190,11 @@ export function ChartCard({
               )}
             </>
           ) : loading ? (
-            <span className="text-[10px] text-muted-foreground">Đang tải…</span>
+            <span className="text-[8px] text-muted-foreground">Đang tải…</span>
           ) : error ? (
-            <span className="text-[10px] text-down">Lỗi</span>
+            <span className="text-[8px] text-down">Lỗi</span>
           ) : (
-            <span className="text-[10px] text-muted-foreground">—</span>
+            <span className="text-[8px] text-muted-foreground">—</span>
           )}
         </div>
       </div>

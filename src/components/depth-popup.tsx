@@ -77,7 +77,7 @@ export function DepthPopup({
   const top = vh - rect.bottom > EST_H + 8 ? rect.bottom + 4 : Math.max(8, rect.top - EST_H - 4);
 
   const Row = ({ lvl, side }: { lvl: DepthLevel | null; side: "bid" | "ask" }) => (
-    <div className="flex items-center justify-between px-2 py-[3px] font-mono text-[12px] tabular-nums">
+    <div className="flex items-center justify-between px-2 py-[3px] font-mono text-[10px] tabular-nums">
       <span className={cn(lvl ? toneOf(lvl.price, depth) : "text-muted-foreground")}>
         {lvl ? fmtP(lvl.price) : "—"}
       </span>
@@ -95,10 +95,10 @@ export function DepthPopup({
       aria-label={`Bước giá ${depth.symbol}`}
     >
       <div className="flex items-center justify-between border-b border-border px-2.5 py-1.5">
-        <span className="font-mono text-[14px] font-bold tracking-[0.03em]">{depth.symbol}</span>
+        <span className="font-mono text-[12px] font-bold tracking-[0.03em]">{depth.symbol}</span>
         <span
           className={cn(
-            "font-mono text-[12px] font-semibold tabular-nums",
+            "font-mono text-[10px] font-semibold tabular-nums",
             depth.last != null ? toneOf(depth.last, depth) : "text-muted-foreground",
           )}
         >
@@ -106,13 +106,13 @@ export function DepthPopup({
         </span>
       </div>
       {depth.bids.length === 0 && depth.asks.length === 0 ? (
-        <p className="px-2.5 py-3 text-center text-[12px] text-muted-foreground">
+        <p className="px-2.5 py-3 text-center text-[10px] text-muted-foreground">
           Chưa có dữ liệu bước giá
         </p>
       ) : (
         <div className="grid grid-cols-2">
           <div className="border-r border-border">
-            <div className="border-b border-border bg-up/10 px-2 py-0.5 text-center text-[10px] font-bold uppercase tracking-wider text-up">
+            <div className="border-b border-border bg-up/10 px-2 py-0.5 text-center text-[8px] font-bold uppercase tracking-wider text-up">
               Mua
             </div>
             {idx.map((i) => (
@@ -120,7 +120,7 @@ export function DepthPopup({
             ))}
           </div>
           <div>
-            <div className="border-b border-border bg-down/10 px-2 py-0.5 text-center text-[10px] font-bold uppercase tracking-wider text-down">
+            <div className="border-b border-border bg-down/10 px-2 py-0.5 text-center text-[8px] font-bold uppercase tracking-wider text-down">
               Bán
             </div>
             {idx.map((i) => (
@@ -129,7 +129,7 @@ export function DepthPopup({
           </div>
         </div>
       )}
-      <div className="border-t border-border px-2.5 py-0.5 text-center text-[10px] uppercase tracking-wider text-muted-foreground">
+      <div className="border-t border-border px-2.5 py-0.5 text-center text-[8px] uppercase tracking-wider text-muted-foreground">
         Giá · Khối lượng · 3 bước gần nhất
       </div>
     </div>,
