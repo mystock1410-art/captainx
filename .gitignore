@@ -41,3 +41,6 @@ _crop3.py
 Brand Guidelines*.pdf
 .vercel
 .env*
+
+# …but DO track the env template (no secrets in it)
+!.env.example

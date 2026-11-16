@@ -72,6 +72,8 @@ export type MarketAnalyze = {
     netSell: ForeignFlow[];
   };
   liquidity: { points: { t: number; value: number }[] };
+  /** Compare current GTGD vs the same time-of-day in the previous session. */
+  vsPrev?: { prevGtgd: number; delta: number; pct: number } | null;
 };
 
 export type NewsItem = {

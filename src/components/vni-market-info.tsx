@@ -221,7 +221,19 @@ function LiquidityBlock({ data }: { data: MarketAnalyze }) {
           <div className="text-[8px] uppercase tracking-wider text-muted-foreground">
             So cùng giờ phiên trước
           </div>
-          <div className="font-mono text-[12px] text-muted-foreground">—</div>
+          {data.vsPrev ? (
+            <div
+              className={cn(
+                "font-mono text-[12px] font-semibold tabular-nums",
+                data.vsPrev.pct >= 0 ? "text-up" : "text-down",
+              )}
+            >
+              {data.vsPrev.pct >= 0 ? "+" : "−"}
+              {Math.abs(data.vsPrev.pct).toLocaleString("vi-VN", { maximumFractionDigits: 2 })}%
+            </div>
+          ) : (
+            <div className="font-mono text-[12px] text-muted-foreground">—</div>
+          )}
         </div>
       </div>
 

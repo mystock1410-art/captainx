@@ -1,34 +1,29 @@
 import { NextResponse } from "next/server";
-import { getMarketStats } from "@/lib/server/cafef";
-import { getIndexVolumeSeries } from "@/lib/server/dnse";
+import { buildMarketAnalyze } from "@/lib/server/market-analyze";
+import { getPrevSessionGtgd } from "@/lib/server/db";
 
 export const runtime = "nodejs";
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const [stats, vol] = await Promise.all([
-    getMarketStats("HOSE"),
-    getIndexVolumeSeries("VNINDEX"),
-  ]);
+  const data = await buildMarketAnalyze("HOSE");
 
-  // Cumulative turnover curve: the per-bar volume gives the intraday SHAPE;
-  // we scale it so the final point equals the authoritative GTGD total, giving
-  // a correctly-valued (tỷ đồng) liquidity curve for the latest session.
-  let cum = 0;
-  const cumArr: number[] = [];
-  for (let i = 0; i < vol.t.length; i++) {
-    cum += vol.v[i] || 0;
-    cumArr.push(cum);
-  }
-  const totalCum = cumArr.length ? cumArr[cumArr.length - 1] : 0;
-  const points = vol.t.map((t, i) => ({
-    t,
-    value: totalCum > 0 ? Math.round(stats.gtgd * (cumArr[i] / totalCum) * 100) / 100 : 0,
-  }));
+  // "So cùng giờ phiên trước": compare current GTGD with the snapshot taken at
+  // the same time-of-day in a previous session (null until the VPS collector
+  // has accumulated at least one earlier session; DB-less deploys get null).
+  const prevGtgd = await getPrevSessionGtgd("HOSE");
+  const vsPrev =
+    prevGtgd && prevGtgd > 0
+      ? {
+          prevGtgd,
+          delta: Math.round((data.gtgd - prevGtgd) * 100) / 100,
+          pct: Math.round(((data.gtgd - prevGtgd) / prevGtgd) * 10000) / 100,
+        }
+      : null;
 
   return NextResponse.json(
-    { ...stats, liquidity: { points } },
+    { ...data, vsPrev },
     { headers: { "Cache-Control": "public, s-maxage=20, stale-while-revalidate=40" } },
   );
 }

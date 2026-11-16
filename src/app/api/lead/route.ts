@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { insertLead } from "@/lib/server/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -99,8 +100,19 @@ export async function POST(req: NextRequest) {
     ip,
   };
 
-  // Log a REDACTED record to Vercel logs — phone + brokerage account are masked
-  // so plaintext PII never lands in the log stream.
+  // Persist to MySQL (self-hosted VPS). No-op + false when no DB is configured;
+  // never throws, so email/webhook delivery still runs regardless.
+  const stored = await insertLead({
+    email: lead.email,
+    phone: lead.phone,
+    account: lead.account,
+    location: lead.location,
+    ip: lead.ip,
+    userAgent: lead.userAgent,
+  });
+
+  // Log a REDACTED record — phone + brokerage account are masked so plaintext
+  // PII never lands in the log stream.
   console.log(
     "[CAPTAINX-LEAD]",
     JSON.stringify({
@@ -110,6 +122,7 @@ export async function POST(req: NextRequest) {
       location: lead.location,
       submittedAt: lead.submittedAt,
       ip: lead.ip,
+      stored,
     }),
   );
 
